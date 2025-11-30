@@ -1,6 +1,6 @@
 ﻿namespace WebDevelopment.Domain.Enums;
 
-public enum Continent
+public enum ContinentEnum
 {
     Europe = 0,
     SouthAmerica = 1,

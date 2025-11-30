@@ -17,7 +17,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\WebDevelopment.Infrastructure\WebDevelopment.Infrastructure.csproj" />
+    <ProjectReference Include="..\WebDevelopment.Application\WebDevelopment.Application.csproj" />
+    <ProjectReference Include="..\WebDevelopment.Client\WebDevelopment.Client.csproj" />
+    <ProjectReference Include="..\WebDevelopment.Shared\WebDevelopment.Shared.csproj" />
   </ItemGroup>
 
 </Project>

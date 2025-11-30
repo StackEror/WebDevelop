@@ -1,10 +1,74 @@
 ﻿@page "/custom-page"
+@using WebDevelopment.Shared.DTO
+@using WebDevelopment.Shared.Enum
+@using WebDevelopment.Shared.Interfaces
+@inject ICountryService CountryService
 
+<EditForm Model="@Country" OnSubmit="@(async () => await Add(Country))" FormName="AddCountry">
 
+    <p>PeopleCount</p>
+    <InputNumber @bind-Value="@Country.PeopleCount"></InputNumber>
+
+    <p style="margin-top:10px;">Type</p>
+    <InputText @bind-Value="@Country.Type"></InputText>
+
+    <p style="margin-top:10px;">Name</p>
+    <InputText @bind-Value="@Country.Name"></InputText>
+
+    <p style="margin-top:10px;">Country.Continent</p>
+    <InputSelect TValue="ContinentEnum" @bind-Value="@Country.Continent">
+
+        @foreach (var val in Enum.GetValues(typeof(ContinentEnum)).Cast<ContinentEnum>())
+        {
+            <option value="@val">@val</option>
+        }
+    </InputSelect>
+
+    <p style="margin-top:10px;">Country.Continent</p>
+    <InputSelect TValue="CountrySizeEnum?" @bind-Value="@Country.CountrySize">
+
+        @foreach (var val in Enum.GetValues(typeof(CountrySizeEnum)).Cast<CountrySizeEnum>())
+        {
+            <option value="@val">@val</option>
+        }
+    </InputSelect>
+    <p style="margin-top:10px;">Country.Continent</p>
+    <InputSelect TValue="RankEnum?" @bind-Value="@Country.Rank">
+
+        @foreach (var val in Enum.GetValues(typeof(RankEnum)).Cast<RankEnum>())
+        {
+            <option value="@val">@val</option>
+        }
+    </InputSelect>
+
+    <InputCheckbox @bind-Value="@Country.IsIsand"></InputCheckbox>
+<button  type="submit"  class="btn btn-primary">Add</button>
+</EditForm>
 
 
 
 
 @code {
+    public CountryDto Country { get; set; } = new();
+
+    public async Task Add(CountryDto model)
+    {Console.WriteLine($"model.Name {model.Name}");
+        Console.WriteLine($"model.Type {model.Type}");
+        Console.WriteLine($"model.Rank {model.Rank}");
+        Console.WriteLine($"model.CountrySize {model.CountrySize}");
+        Console.WriteLine($"model.Continent {model.Continent}");
+        Console.WriteLine($"model.IsIsand {model.IsIsand}");
+        await CountryService.AddCountry(model);
+        Country = new();
+    }
+
+    public async Task TypeChange(string type)
+    {
+        Country.Type = type;
+    }
+    public async Task NameChange(string type)
+    {
+        Country.Name = type;
+    }
 
 }

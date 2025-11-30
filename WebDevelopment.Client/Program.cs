@@ -1,10 +1,20 @@
+using Microsoft.AspNetCore.Components.Web;
 using WebDevelopment.Client.Components;
+using WebDevelopment.Client.Services;
+using WebDevelopment.Shared.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+builder.Services.AddScoped(sp => new HttpClient
+{
+    BaseAddress = new Uri("https://localhost:7027")
+});
+
+builder.Services.AddScoped<ICountryService, CountryService>();
 
 var app = builder.Build();
 

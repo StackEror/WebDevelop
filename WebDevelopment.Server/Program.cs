@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
+using WebDevelopment.Application.Services.Country;
 using WebDevelopment.Infrastructure;
+using WebDevelopment.Shared.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +15,9 @@ var connectionString = builder.Configuration.GetConnectionString("Default") ??
     throw new InvalidOperationException("Connection string 'Default' not found.");
 
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
+
+builder.Services.AddScoped<ICountryService, CountryService>();
+
 
 var app = builder.Build();
 

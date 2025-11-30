@@ -1,6 +1,6 @@
 ﻿namespace WebDevelopment.Domain.Enums;
 
-public enum CountrySize
+public enum CountrySizeEnum
 {
     Small = 0,
     Medium = 1,

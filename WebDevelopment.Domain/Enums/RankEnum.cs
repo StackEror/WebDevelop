@@ -1,6 +1,6 @@
 ﻿namespace WebDevelopment.Domain.Enums;
 
-public enum Rank
+public enum RankEnum
 {
     FirstCountry = 0,
     SecondCountry = 1,
