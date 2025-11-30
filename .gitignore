@@ -9,7 +9,6 @@
 
 #VS folder
 .vs/
-WebDevelopment.sln
 appsettings.Development.json
 
 # User-specific files (MonoDevelop/Xamarin Studio)
