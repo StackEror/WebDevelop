@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using WebDevelopment.Domain.Entities;
 using WebDevelopment.Shared.DTO;
 using WebDevelopment.Shared.Interfaces;
 

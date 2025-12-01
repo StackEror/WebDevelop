@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Components.Web;
 using WebDevelopment.Client.Components;
 using WebDevelopment.Client.Services;
 using WebDevelopment.Shared.Interfaces;

@@ -3,7 +3,6 @@
 @using WebDevelopment.Shared.Enum
 @using WebDevelopment.Shared.Interfaces
 @inject ICountryService CountryService
-@rendermode InteractiveServer
 
 <EditForm Model="@Country" OnSubmit="@(async () => await Add(Country))" FormName="AddCountry">
 
