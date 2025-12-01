@@ -1,4 +1,4 @@
-﻿using WebDevelopment.Shared.Enum;
+﻿using WebDevelopment.Shared.Enums;
 
 namespace WebDevelopment.Shared.DTO
 {

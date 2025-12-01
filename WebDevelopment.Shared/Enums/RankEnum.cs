@@ -1,4 +1,4 @@
-﻿namespace WebDevelopment.Shared.Enum;
+﻿namespace WebDevelopment.Shared.Enums;
 
 public enum RankEnum
 {
