@@ -3,6 +3,7 @@
 @using WebDevelopment.Shared.Enum
 @using WebDevelopment.Shared.Interfaces
 @inject ICountryService CountryService
+@rendermode InteractiveServer
 
 <EditForm Model="@Country" OnSubmit="@(async () => await Add(Country))" FormName="AddCountry">
 
@@ -41,7 +42,7 @@
         }
     </InputSelect>
 
-    <InputCheckbox @bind-Value="@Country.IsIsand"></InputCheckbox>
+    <InputCheckbox @bind-Value="@Country.IsIsland"></InputCheckbox>
 <button  type="submit"  class="btn btn-primary">Add</button>
 </EditForm>
 
@@ -57,7 +58,7 @@
         Console.WriteLine($"model.Rank {model.Rank}");
         Console.WriteLine($"model.CountrySize {model.CountrySize}");
         Console.WriteLine($"model.Continent {model.Continent}");
-        Console.WriteLine($"model.IsIsand {model.IsIsand}");
+        Console.WriteLine($"model.IsIsland {model.IsIsland}");
         await CountryService.AddCountry(model);
         Country = new();
     }

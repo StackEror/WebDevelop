@@ -1,7 +1,5 @@
-﻿using WebDevelopment.Domain.Entities;
-using WebDevelopment.Infrastructure;
+﻿using WebDevelopment.Infrastructure;
 using WebDevelopment.Shared.DTO;
-using WebDevelopment.Shared.Enum;
 using WebDevelopment.Shared.Interfaces;
 
 namespace WebDevelopment.Application.Services.Country;
@@ -17,7 +15,8 @@ public class CountryService(AppDbContext _dbContext) : ICountryService
             Continent = (Domain.Enums.ContinentEnum)countryDto.Continent,
             CountrySize = (Domain.Enums.CountrySizeEnum)countryDto.CountrySize,
             Name = countryDto.Name,
-            IsIsand = countryDto.IsIsand,
+            Type = countryDto.Type,
+            IsIsland = countryDto.IsIsland,
         };
         await _dbContext.AddAsync(country);
         await _dbContext.SaveChangesAsync();
