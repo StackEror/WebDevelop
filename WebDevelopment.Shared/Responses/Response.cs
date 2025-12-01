@@ -1,4 +1,4 @@
-﻿namespace WebDevelopment.Shared.Response;
+﻿namespace WebDevelopment.Shared.Responses;
 
 public class Response
 {
