@@ -1,0 +1,33 @@
+﻿@* <FodModal Size="FodSize.Small" Show="true" OnClosed="OnCancel" Centered="true">
+	<HeaderTemplate>
+		<strong style="font-size:16px">
+			@(!string.IsNullOrWhiteSpace(Title) ? Title : Texts.Confirm_Modal_Title)
+		</strong>
+	</HeaderTemplate>
+	<BodyTemplate>
+		@((MarkupString)(!string.IsNullOrWhiteSpace(Content) ? Content : Texts.Confirm_Modal_Content))
+	</BodyTemplate>
+	<FooterTemplate>
+		<div class="d-flex justify-content-end gap-3">
+			<FodButton Variant="FodVariant.Filled" Color="FodColor.Error" OnClick="OnCancel" Class="anti-fod-uppercase">
+				@(!string.IsNullOrWhiteSpace(CancelButtonText) ? CancelButtonText : Texts.Confirm_Modal_Cancel_Button)
+			</FodButton>
+			<FodButton Variant="FodVariant.Filled" Disabled="@ConformButtonDisabled" Color="FodColor.Success" OnClick="OnConfirm" Class="anti-fod-uppercase">
+				@(!string.IsNullOrWhiteSpace(ConfirmButtonText) ? ConfirmButtonText : Texts.Confirm_Modal_Confirm_Button)
+			</FodButton>
+		</div>
+	</FooterTemplate>
+</FodModal>
+
+@code {
+	[Parameter] public string Title { get; set; } = string.Empty;
+	[Parameter] public string Content { get; set; } = string.Empty;
+
+	[Parameter] public string ConfirmButtonText { get; set; } = string.Empty;
+	[Parameter] public string CancelButtonText { get; set; } = string.Empty;
+
+	[Parameter] public bool ConformButtonDisabled { get; set; }
+
+	[Parameter] public EventCallback OnCancel { get; set; }
+	[Parameter] public EventCallback OnConfirm { get; set; }
+} *@

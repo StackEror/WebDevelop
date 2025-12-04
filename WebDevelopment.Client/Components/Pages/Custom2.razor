@@ -1,0 +1,124 @@
+﻿@page "/custom-page2"
+@using WebDevelopment.Shared.DTO
+@using WebDevelopment.Shared.Enums
+@using WebDevelopment.Shared.Interfaces
+@inject ICountryService CountryService
+@inject IJSRuntime JSRuntime
+
+
+<div>
+    <span style="font-size:30px; font-weight:bold;">Instant onInput JS counter and validator</span>
+</div>
+<input id="htmlEditor" @bind="@valueChange" autocomplete="off" />@*@oninput="e => {valueChange = e.Value?.ToString();}*@
+
+<div>
+    Left characters: @(CharactersLeft > 0 ? CharactersLeft : 0)
+</div>
+
+<span class="text-danger fs-13" style="font-size: 10px;">
+    @(string.IsNullOrEmpty(StringLimitError) ? "" : StringLimitError)
+</span>
+
+
+
+<div>
+    <span style="font-size:30px; font-weight:bold;">Csharp Blazor instant counter and validator</span>
+</div>
+
+
+@* <input type="text" @bind-value="TestValue" @bind-value:event="oninput" /> *@
+<input type="text" @bind-value="TestValue" @oninput="OnTextChanged" />
+<p>  Left characters: @TestCharactersLeft</p>
+
+@code {
+    private string valueChange { get; set; } = string.Empty;
+    private string TestValue { get; set; } = string.Empty;
+    private string StringLimitError { get; set; } = string.Empty;
+
+    private int CharactersLeft { get; set; } = TextMaxLen;
+    private int TestCharactersLeft => TextMaxLen - (TestValue?.Length ?? 0);
+
+    private const int TextMinLen = 10;
+    private const int TextMaxLen = 30;
+
+    private DotNetObjectReference<Custom2>? _objRef;
+
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _objRef = DotNetObjectReference.Create(this);
+            await JSRuntime.InvokeVoidAsync("editorCounterValidator", TextMaxLen, _objRef);
+        }
+    }
+
+    [JSInvokable]
+    public void ChangeLimitError(int textLength, int leftLength)
+    {
+        CharactersLeft = leftLength;
+        Console.WriteLine($"textLength {textLength}");
+        switch (textLength)
+        {
+            case < 1:
+                StringLimitError = $"Minimum limit is {TextMinLen}";
+                break;
+            case < TextMinLen and >= 1:
+                StringLimitError = $"Minimum limit is {TextMinLen}";
+                break;
+            case >= TextMinLen and < TextMaxLen:
+                StringLimitError = "";
+                break;
+            case >= TextMaxLen:
+                StringLimitError = $"Maximum limit of {TextMaxLen} is reached";
+                break;
+        }
+
+        StateHasChanged();
+    }
+
+    private void OnTextChanged(ChangeEventArgs e)
+    {
+        Console.WriteLine($"OnTextChanged - {e.Value.ToString()}");
+        TestValue = e.Value?.ToString() ?? "";
+    }
+
+
+
+
+    // private void MakeChange()
+    // {
+    //     if(valueChange.Count() > 10)
+    //     {
+    //         valueChange = valueChange.Substring(0, 9);
+    //         StringLimitError = "Eror string length";
+    //         StateHasChanged();
+    //     }
+    //     else
+    //     {
+    //         StringLimitError = string.Empty;
+    //     }
+    // }
+
+}
+@*
+    
+Cel mai OPTIMIZAT caz
+<input type="text"
+       @bind-value="Text"
+       @bind-value:event="oninput" />
+
+<p>Caracter rămase: @RemainingChars</p>
+
+@code {
+    private string Text { get; set; } = "";
+    private int Limit = 12000;
+
+    private int RemainingChars => Limit - (Text?.Length ?? 0);
+
+    private void OnTextChanged(ChangeEventArgs e)
+    {
+        Text = e.Value?.ToString() ?? "";
+    }
+}
+*@
