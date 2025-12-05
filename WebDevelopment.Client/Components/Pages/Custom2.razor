@@ -9,7 +9,7 @@
 <div>
     <span style="font-size:30px; font-weight:bold;">Instant onInput JS counter and validator</span>
 </div>
-<input id="htmlEditor" @bind="@valueChange" autocomplete="off" />@*@oninput="e => {valueChange = e.Value?.ToString();}*@
+<input id="htmlEditor" @bind="@TestValue" autocomplete="off" />@*@oninput="e => {TestValue = e.Value?.ToString();}*@
 
 <div>
     Left characters: @(CharactersLeft > 0 ? CharactersLeft : 0)
@@ -26,17 +26,49 @@
 </div>
 
 
-@* <input type="text" @bind-value="TestValue" @bind-value:event="oninput" /> *@
-<input type="text" @bind-value="TestValue" @oninput="OnTextChanged" />
-<p>  Left characters: @TestCharactersLeft</p>
+<div>
+    <span style="font-size:15px; font-weight:bold;">@((MarkupString)("input type=\"text\" @bind-value\"TestValue1\" @bind-value:event=\"oninput\""))</span>
+</div>
+<input type="text" @bind-value="TestValue1" @bind-value:event="oninput" />
+<p>  Left characters: @CharactersLeft1</p>
+<span class="text-danger fs-13" style="font-size: 10px;">
+    @(string.IsNullOrEmpty(StringLimitError1) ? "" : StringLimitError1)
+</span>
+
+
+<div>
+    <span style="font-size:15px; font-weight:bold;">@((MarkupString)("input type=\"text\" @bind-value=\"TestValue1\" @oninput=\"OnTextChanged\""))</span>
+</div>
+
+<input type="text" @bind-value="TestValue2" @oninput="OnTextChanged" />
+<p>  Left characters: @CharactersLeft2</p>
+<span class="text-danger fs-13" style="font-size: 10px;">
+    @(string.IsNullOrEmpty(StringLimitError2) ? "" : StringLimitError2)
+</span>
 
 @code {
-    private string valueChange { get; set; } = string.Empty;
     private string TestValue { get; set; } = string.Empty;
-    private string StringLimitError { get; set; } = string.Empty;
+
+    private string _testValue1 = string.Empty; 
+    private string TestValue1 
+    { 
+        get => _testValue1; 
+        set
+        {
+            _testValue1 = value;
+            StringLimitError1 = GetStringLimitError(TestValue1.Length);
+        }
+
+    }
+    private string TestValue2 { get; set; } = string.Empty;
 
     private int CharactersLeft { get; set; } = TextMaxLen;
-    private int TestCharactersLeft => TextMaxLen - (TestValue?.Length ?? 0);
+    private int CharactersLeft1 => TextMaxLen - (TestValue1?.Length ?? 0);
+    private int CharactersLeft2 => TextMaxLen - (TestValue2?.Length ?? 0);
+
+    private string StringLimitError { get; set; } = string.Empty;
+    private string StringLimitError1 { get; set; } = string.Empty;
+    private string StringLimitError2 { get; set; } = string.Empty;
 
     private const int TextMinLen = 10;
     private const int TextMaxLen = 30;
@@ -58,39 +90,38 @@
     {
         CharactersLeft = leftLength;
         Console.WriteLine($"textLength {textLength}");
+        StringLimitError = GetStringLimitError(textLength);
+        StateHasChanged();
+    }
+
+    public string GetStringLimitError(int textLength)
+    {
         switch (textLength)
         {
             case < 1:
-                StringLimitError = $"Minimum limit is {TextMinLen}";
-                break;
+                return $"Minimum limit is {TextMinLen}";
             case < TextMinLen and >= 1:
-                StringLimitError = $"Minimum limit is {TextMinLen}";
-                break;
+                return $"Minimum limit is {TextMinLen}";
             case >= TextMinLen and < TextMaxLen:
-                StringLimitError = "";
-                break;
+                return "";
             case >= TextMaxLen:
-                StringLimitError = $"Maximum limit of {TextMaxLen} is reached";
-                break;
+                return $"Maximum limit of {TextMaxLen} is reached";
         }
+    }        
 
-        StateHasChanged();
-    }
 
     private void OnTextChanged(ChangeEventArgs e)
     {
         Console.WriteLine($"OnTextChanged - {e.Value.ToString()}");
-        TestValue = e.Value?.ToString() ?? "";
+        StringLimitError2 = GetStringLimitError(e.Value.ToString().Length);
+        TestValue2 = e.Value?.ToString() ?? "";
     }
-
-
-
 
     // private void MakeChange()
     // {
-    //     if(valueChange.Count() > 10)
+    //     if(TestValue.Count() > 10)
     //     {
-    //         valueChange = valueChange.Substring(0, 9);
+    //         TestValue = TestValue.Substring(0, 9);
     //         StringLimitError = "Eror string length";
     //         StateHasChanged();
     //     }
@@ -99,26 +130,4 @@
     //         StringLimitError = string.Empty;
     //     }
     // }
-
 }
-@*
-    
-Cel mai OPTIMIZAT caz
-<input type="text"
-       @bind-value="Text"
-       @bind-value:event="oninput" />
-
-<p>Caracter rămase: @RemainingChars</p>
-
-@code {
-    private string Text { get; set; } = "";
-    private int Limit = 12000;
-
-    private int RemainingChars => Limit - (Text?.Length ?? 0);
-
-    private void OnTextChanged(ChangeEventArgs e)
-    {
-        Text = e.Value?.ToString() ?? "";
-    }
-}
-*@
