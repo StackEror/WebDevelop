@@ -5,7 +5,7 @@ namespace WebDevelopment.Shared.Interfaces;
 
 public interface ICountryService
 {
-    Task<Response<Guid>> AddCountry(CountryDto country);
+    Task<Response<Guid>> Add(CountryDto country);
     Task<Response> Update(CountryDto country);
     Task<Response<CountryDto>> GetById(Guid id);
     Task<Response<List<CountryDto>>> GetList();

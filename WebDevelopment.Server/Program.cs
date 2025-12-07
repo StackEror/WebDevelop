@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using WebDevelopment.Application;
 using WebDevelopment.Application.Services.Country;
 using WebDevelopment.Infrastructure;
 using WebDevelopment.Shared.Interfaces;
@@ -16,6 +17,7 @@ var connectionString = builder.Configuration.GetConnectionString("Default") ??
 
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
 
+builder.Services.AddAplication();
 builder.Services.AddScoped<ICountryService, CountryService>();
 
 

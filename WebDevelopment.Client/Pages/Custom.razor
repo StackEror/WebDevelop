@@ -1,0 +1,172 @@
+﻿@page "/custom-page"
+@using System.ComponentModel.DataAnnotations
+@using System.Reflection
+@using WebDevelopment.Shared.DTO
+@using WebDevelopment.Shared.Enums
+@using WebDevelopment.Shared.Interfaces
+@inject ICountryService CountryService
+
+@if (IsLoading)
+{
+    <Loading />
+}
+else
+{
+
+    <EditForm Model="@Country" OnSubmit="@(async () => await Add(Country))" FormName="AddCountry">
+
+        <p>PeopleCount</p>
+        <InputNumber @bind-Value="@Country.PeopleCount"></InputNumber>
+
+        <p style="margin-top:10px;">Type</p>
+        <InputText @bind-Value="@Country.Type"></InputText>
+
+        <p style="margin-top:10px;">Name</p>
+        <InputText @bind-Value="@Country.Name"></InputText>
+
+        <p style="margin-top:10px;">Country.Continent</p>
+        <InputSelect TValue="ContinentEnum?" @bind-Value="@Country.Continent">
+
+            @foreach (var val in Enum.GetValues(typeof(ContinentEnum)).Cast<ContinentEnum>())
+            {
+                <option value="@val">@val</option>
+            }
+        </InputSelect>
+
+        <p style="margin-top:10px;">Country.Continent</p>
+        <InputSelect TValue="CountrySizeEnum?" @bind-Value="@Country.CountrySize">
+
+            @foreach (var val in Enum.GetValues(typeof(CountrySizeEnum)).Cast<CountrySizeEnum>())
+            {
+                <option value="@val">@val</option>
+            }
+        </InputSelect>
+        <p style="margin-top:10px;">Country.Continent</p>
+        <InputSelect TValue="RankEnum?" @bind-Value="@Country.Rank">
+
+            @foreach (var val in Enum.GetValues(typeof(RankEnum)).Cast<RankEnum>())
+            {
+                <option value="@val">@val</option>
+            }
+        </InputSelect>
+
+        <InputCheckbox @bind-Value="@Country.IsIsland"></InputCheckbox>
+        <button type="submit" class="btn btn-primary">Add</button>
+    </EditForm>
+
+    <input type="text" @bind-value="IdToUse" @bind-value:event="oninput" @onchange="async () => await GetById(IdToUse)" />
+    <button type="button" class="btn btn-primary m-3" @onclick="async () => await GetById(IdToUse)">GetById</button>
+
+
+    <button type="button" class="btn btn-primary m-3" @onclick="async () => await GetList()">GetList</button>
+
+
+    <button type="button" class="btn btn-primary m-3" @onclick="async () => await Delete(IdToUse)">Delete</button>
+    <button type="button" class="btn btn-primary m-3" @onclick="async () => await Update(Country)">Update</button>
+
+
+    <table class="table">
+        @*class="table table-bordered table-striped">*@
+        <thead>
+            <tr>
+                <th>Id </th>
+                <th>Name</th>
+                <th>Continent</th>
+                <th>Rank</th>
+                <th>CountrySize</th>
+                <th>CreatedAt</th>
+                <th>UpdatedAt</th>
+                <th>PeopleCount</th>
+                <th>IsIsland</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Countries)
+            {
+                <tr>
+                    <th id="textToCopy" >@item.Id <button onclick="copyText('@item.Id')">Copy</button></th>
+                    <th>@item.Name</th>
+                    <th>@GetDisplayName(item.Continent)</th>
+                    <th>@GetDisplayName(item.Rank)</th>
+                    <th>@GetDisplayName(item.CountrySize)</th>
+                    <th>@item.CreatedAt</th>
+                    <th>@item.UpdatedAt</th>
+                    <th>@item.PeopleCount</th>
+                    <th>@item.IsIsland</th>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+<script>
+    function copyText(text) {
+        navigator.clipboard.writeText(text);
+    }
+</script>
+
+@code {
+    public CountryDto Country { get; set; } = new();
+    public List<CountryDto> Countries { get; set; } = [];
+    public string IdToUse { get; set; } = string.Empty;
+    public bool IsLoading { get; set; } = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetList();
+        await Task.Delay(100);
+        IsLoading = false;
+        StateHasChanged();
+    }
+    public async Task Add(CountryDto model)
+    {
+        await CountryService.Add(model);
+        Country = new();
+        StateHasChanged();
+    }
+    public async Task Delete(string id)
+    {
+        if (!Guid.TryParse(id, out var guid))
+        {
+            return;
+        }
+        await CountryService.Delete(guid);
+        await GetList();
+        IdToUse = string.Empty;
+        StateHasChanged();
+    }
+    public async Task Update(CountryDto model)
+    {
+        await CountryService.Update(Country);
+        await GetById(Country.Id.ToString());
+        StateHasChanged();
+    }
+    public async Task GetList()
+    {
+        IsLoading = true;
+        var result = await CountryService.GetList();
+        Countries = result.Data;
+        IsLoading = false;
+    }
+    public async Task GetById(string id)
+    {
+        if (!Guid.TryParse(id, out var guid))
+            return;
+
+        var result = await CountryService.GetById(guid);
+        Countries = [];
+        Countries.Add(result.Data);
+        Country = result.Data;
+        IdToUse = string.Empty;
+        StateHasChanged();
+    }
+
+    public static string GetDisplayName(Enum enumValue)
+    {
+        var member = enumValue.GetType().GetMember(enumValue.ToString()).First();
+        var display = member.GetCustomAttribute<DisplayAttribute>();
+
+        return display?.GetName() ?? enumValue.ToString();
+    }
+}

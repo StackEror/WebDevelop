@@ -1,4 +1,4 @@
-using WebDevelopment.Client.Components;
+using WebDevelopment.Client;
 using WebDevelopment.Client.Services;
 using WebDevelopment.Shared.Interfaces;
 
