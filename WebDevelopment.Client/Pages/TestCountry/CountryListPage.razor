@@ -1,0 +1,113 @@
+﻿@page "/list-page"
+
+@using System.ComponentModel.DataAnnotations
+@using System.Reflection
+@using WebDevelopment.Shared.DTO
+@using WebDevelopment.Shared.Enums
+@using WebDevelopment.Shared.Interfaces
+
+@inject ICountryService CountryService
+@inject NavigationManager NavigationManager
+
+@if (IsLoading)
+{
+    <Loading />
+}
+else
+{
+    <button type="button" class="btn btn-primary m-3" @onclick="() => NavToAddOrUpdate()">Add country</button>
+
+
+    <table class="table">
+        @*class="table table-bordered table-striped">*@
+        <thead>
+            <tr>
+                <th>Id </th>
+                <th>Name</th>
+                <th>Continent</th>
+                <th>Rank</th>
+                <th>CountrySize</th>
+                <th>CreatedAt</th>
+                <th>UpdatedAt</th>
+                <th>PeopleCount</th>
+                <th>IsIsland</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Countries)
+            {
+                <tr>
+                    <th id="textToCopy">@item.Id</th>@*<button onclick="copyText('@item.Id')">Copy</button>*@
+                    <th>@item.Name</th>
+                    <th>@GetDisplayName(item.Continent)</th>
+                    <th>@GetDisplayName(item.Rank)</th>
+                    <th>@GetDisplayName(item.CountrySize)</th>
+                    <th>@item.CreatedAt</th>
+                    <th>@item.UpdatedAt</th>
+                    <th>@item.PeopleCount</th>
+                    <th>@item.IsIsland</th>
+                    <th>
+                        <div style="display:flex;">
+                            <button type="button" class="btn btn-primary m-3" @onclick="() => NavToAddOrUpdate(item.Id.ToString())">Update</button>
+                            <button type="button" class="btn btn-primary m-3" @onclick="async () => await Delete(item.Id.ToString())">Delete</button>
+                        </div>
+                    </th>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+@* <script>
+    function copyText(text) {
+        navigator.clipboard.writeText(text);
+    }
+</script> *@
+
+@code {
+    public CountryDto Country { get; set; } = new();
+    public List<CountryDto> Countries { get; set; } = [];
+    public string IdToUse { get; set; } = string.Empty;
+    public bool IsLoading { get; set; } = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetList();
+        await Task.Delay(100);
+        IsLoading = false;
+        StateHasChanged();
+    }
+
+    public async Task GetList()
+    {
+        IsLoading = true;
+        var result = await CountryService.GetList();
+        Countries = result.Data;
+        IsLoading = false;
+    }
+    public void NavToAddOrUpdate(string Id = default!)
+    {
+        NavigationManager.NavigateTo($"add-or-update-country/{Id}");
+    }
+    public async Task Delete(string id)
+    {
+        if (!Guid.TryParse(id, out var guid))
+        {
+            return;
+        }
+        await CountryService.Delete(guid);
+        await GetList();
+        IdToUse = string.Empty;
+        StateHasChanged();
+    }
+
+    public static string GetDisplayName(Enum enumValue)
+    {
+        var member = enumValue.GetType().GetMember(enumValue.ToString()).First();
+        var display = member.GetCustomAttribute<DisplayAttribute>();
+
+        return display?.GetName() ?? enumValue.ToString();
+    }
+}

@@ -1,4 +1,4 @@
-﻿@page "/custom-page2"
+﻿@page "/oninput-validation"
 @using WebDevelopment.Shared.DTO
 @using WebDevelopment.Shared.Enums
 @using WebDevelopment.Shared.Interfaces
@@ -10,7 +10,7 @@
     <span style="font-size:30px; font-weight:bold;">Instant onInput JS counter and validator</span>
 </div>
 <input id="htmlEditor" @bind="@TestValue" autocomplete="off" />@*@oninput="e => {TestValue = e.Value?.ToString();}*@
-
+               
 <div>
     Left characters: @(CharactersLeft > 0 ? CharactersLeft : 0)
 </div>
@@ -73,7 +73,7 @@
     private const int TextMinLen = 10;
     private const int TextMaxLen = 30;
 
-    private DotNetObjectReference<Custom2>? _objRef;
+    private DotNetObjectReference<InstantStringCountAndValidation>? _objRef;
 
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
