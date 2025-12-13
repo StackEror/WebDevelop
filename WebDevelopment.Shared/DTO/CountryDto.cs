@@ -1,19 +1,24 @@
-﻿using WebDevelopment.Shared.Enums;
+﻿using System.ComponentModel.DataAnnotations;
+using WebDevelopment.Shared.Enums;
 
 namespace WebDevelopment.Shared.DTO
 {
     public class CountryDto
     {
         public Guid Id { get; set; }
-        public string Name { get; set; } = "string.Empty";
+        [Required(ErrorMessage = "Name is required")]
+        public string Name { get; set; }
         public string? Description { get; set; } =  "TestDescription";
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
-        public DateTime UpdatedAt { get; set; } = DateTime.Now;
-        public int PeopleCount { get; set; } = 100;
-        public string? Type { get; set; } = "TestType";
-        public RankEnum? Rank { get; set; } = RankEnum.FirstCountry;
-        public ContinentEnum? Continent { get; set; } = ContinentEnum.Antarctica;
-        public CountrySizeEnum? CountrySize { get; set; } = CountrySizeEnum.Medium;
+        public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
+        public int PeopleCount { get; set; }
+        public string? Type { get; set; }
+        [Required(ErrorMessage = "Rank is required")]
+        public RankEnum? Rank { get; set; }
+        [Required(ErrorMessage = "Continent is required")]
+        public ContinentEnum? Continent { get; set; }
+        [Required(ErrorMessage = "CountrySize is required")]
+        public CountrySizeEnum? CountrySize { get; set; }
         public bool IsIsland { get; set; } = false;
     }
 }
