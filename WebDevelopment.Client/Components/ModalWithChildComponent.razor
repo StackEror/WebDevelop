@@ -1,0 +1,325 @@
+﻿<div class="modal-overlay">
+    <div class="@($"modal-container {ModalTypeClass}")">
+        <div class="modal-header">
+            <div class="modal-title">@Title</div>
+            <button class="close-btn" @onclick="HandleCloseAsync">×</button>
+        </div>
+        @if (UseLoading && ShowLoading)
+        {
+            <Loading />
+        }
+        <div class="modal-body">
+            <div class="modal-content1">
+                @ChildContent
+            </div>
+        </div>
+        <div class="modal-footer">
+            @if (ShowFooter)
+            {
+                <button class="modal-button-cancel" disabled="@IsDisabled" @onclick="HandleCancelAsync">@CancelButtonTitle</button>
+                <button class="modal-button-confirm" disabled="@IsDisabled" @onclick="HandleConfirmAsync">@ConfirmButtonTitle</button>
+            }
+        </div>
+    </div>
+</div>
+
+
+@code {
+    [Parameter] public string Title { get; set; } = "Modal_Title";
+    [Parameter] public string Content { get; set; } = "Modal_Content";
+    [Parameter] public string ConfirmButtonTitle { get; set; } = "Confirm_Button_Title";
+    [Parameter] public string CancelButtonTitle { get; set; } = "Cancel_Button_Title";
+    [Parameter] public ModalTypeEnum ModalType { get; set; } = ModalTypeEnum.Default;
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public bool ShowFooter { get; set; } = true;
+    [Parameter] public bool UseLoading { get; set; } = false;
+    private bool IsDisabled { get; set; } = false;
+    private bool IsProcessing { get; set; } = false;
+    [Parameter] public bool ShowLoading { get; set; } = false;
+
+    [Parameter] public EventCallback OnConfirm { get; set; }
+    private async Task HandleConfirmAsync()
+    {
+        if (IsProcessing)
+            return;
+
+        ShowLoading = true;
+        IsProcessing = true;
+        IsDisabled = true;
+        StateHasChanged();
+
+        try
+        {
+            await OnConfirm.InvokeAsync();
+            await Task.Delay(100);
+        }
+        finally
+        {
+            ShowLoading = false;
+            IsProcessing = false;
+            IsDisabled = false;
+        }
+    }
+
+    [Parameter] public EventCallback OnClose { get; set; }
+    private async Task HandleCloseAsync()
+    {
+        await OnClose.InvokeAsync();
+        IsDisabled = false;
+    }
+    [Parameter] public EventCallback OnCancel { get; set; }
+    private async Task HandleCancelAsync()
+    {
+        if (OnCancel.HasDelegate)
+            await OnCancel.InvokeAsync();
+        else
+            await OnClose.InvokeAsync();
+    }
+
+    public enum ModalTypeEnum
+    {
+        Default = 0, // modal--default
+        Primary = 1, // modal--primary
+        Warning = 2, // modal--warning
+        Danger = 3, // modal--danger
+        Success = 4 // modal--success
+    }
+
+    private string ModalTypeClass { get; set; } = "modal--default";
+
+    protected override void OnInitialized()
+    {
+        ModalTypeClass = ModalType switch
+        {
+            ModalTypeEnum.Default => "modal--default",
+            ModalTypeEnum.Primary => "modal--primary",
+            ModalTypeEnum.Warning => "modal--warning",
+            ModalTypeEnum.Danger => "modal--danger",
+            ModalTypeEnum.Success => "modal--success",
+            _ => "modal--default",
+        };
+    }
+}
+
+<style>
+    /* --- Overlay general --- */
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.4);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1100;
+    }
+
+    /* --- Containerul principal --- */
+    .modal-container {
+        width: 750px;
+        min-width: 280px;
+        background: white;
+        box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+        border-radius: 16px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    /* --- Header --- */
+    .modal-header {
+        align-self: stretch;
+        padding: 24px 20px 0 32px;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+
+    .modal-title {
+        flex: 1 1 0;
+        color: #121212;
+        font-size: 24px;
+        font-family: Onest, sans-serif;
+        font-weight: 600;
+        line-height: 32px;
+        word-wrap: break-word;
+        display: flex;
+        align-items: center;
+    }
+
+    /* --- Body --- */
+    .modal-body {
+        align-self: stretch;
+        padding: 8px 32px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .modal-content1 {
+        color: var(--text-base-secondary, #383838);
+        font-size: 16px;
+        font-family: Onest, sans-serif;
+        font-weight: 400;
+        line-height: 24px;
+        word-wrap: break-word;
+    }
+
+    /* --- Footer --- */
+    .modal-footer {
+        align-self: stretch;
+        padding: 12px 20px 24px 20px;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 8px;
+    }
+
+    /* --- Buton Închidere (X) --- */
+    .close-btn {
+        width: 32px;
+        height: 32px;
+        border: none;
+        background: transparent;
+        border-radius: 50%;
+        font-size: 18px;
+        font-weight: bold;
+        line-height: 0;
+        cursor: pointer;
+        color: #444444;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: all 0.2s ease-in-out;
+    }
+
+        .close-btn:hover {
+            background: #919191;
+            color: white;
+        }
+
+    /* === Stiluri comune pentru butoane === */
+    .modal-button-cancel,
+    .modal-button-confirm {
+        height: 48px;
+        min-width: 72px;
+        padding: 0 20px;
+        border-radius: 999px;
+        font-size: 16px;
+        font-family: Onest, sans-serif;
+        font-weight: 500;
+        line-height: 24px;
+        cursor: pointer;
+        transition: all 0.2s ease-in-out;
+    }
+
+    /* === DEFAULT (gri) === */
+    .modal--default .modal-button-cancel {
+        background: transparent;
+        color: #6c757d;
+        border: 2px solid #6c757d;
+    }
+
+        .modal--default .modal-button-cancel:hover {
+            background: #e9ecef;
+        }
+
+    .modal--default .modal-button-confirm {
+        background: #6c757d;
+        color: white;
+        border: 2px solid transparent;
+    }
+
+        .modal--default .modal-button-confirm:hover {
+            background: #5a6268;
+        }
+
+    /* === PRIMARY (albastru) === */
+    .modal--primary .modal-button-cancel {
+        background: transparent;
+        color: #4B6ED2;
+        border: 2px solid #4B6ED2;
+    }
+
+        .modal--primary .modal-button-cancel:hover {
+            background: #e7f1ff;
+        }
+
+    .modal--primary .modal-button-confirm {
+        background: #4B6ED2;
+        color: white;
+        border: 2px solid transparent;
+    }
+
+        .modal--primary .modal-button-confirm:hover {
+            background: #3e65d5;
+        }
+
+    /* === WARNING (galben) === */
+    .modal--warning .modal-button-cancel {
+        background: transparent;
+        color: #f4b400;
+        border: 2px solid #f4b400;
+    }
+
+        .modal--warning .modal-button-cancel:hover {
+            background: #fff7e0;
+        }
+
+    .modal--warning .modal-button-confirm {
+        background: #f4b400;
+        color: white;
+        border: 2px solid transparent;
+    }
+
+        .modal--warning .modal-button-confirm:hover {
+            background: #e2a800;
+        }
+
+    /* === DANGER (roșu) === */
+    .modal--danger .modal-button-cancel {
+        background: transparent;
+        color: #D92D20;
+        border: 2px solid #D92D20;
+    }
+
+        .modal--danger .modal-button-cancel:hover {
+            background: #FCE9E8;
+        }
+
+    .modal--danger .modal-button-confirm {
+        background: #D92D20;
+        color: white;
+        border: 2px solid transparent;
+    }
+
+        .modal--danger .modal-button-confirm:hover {
+            background: #b21c16;
+        }
+
+    /* === SUCCESS (verde) === */
+    .modal--success .modal-button-cancel {
+        background: transparent;
+        color: #198754;
+        border: 2px solid #198754;
+    }
+
+        .modal--success .modal-button-cancel:hover {
+            background: #e9f7f0;
+        }
+
+    .modal--success .modal-button-confirm {
+        background: #198754;
+        color: white;
+        border: 2px solid transparent;
+    }
+
+        .modal--success .modal-button-confirm:hover {
+            background: #157347;
+        }
+
+</style>
