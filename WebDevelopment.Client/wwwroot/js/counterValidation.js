@@ -1,5 +1,5 @@
 ﻿window.editorCounterValidator = function (textLimit, dotNetRef) {
-    const editor = document.getElementById("htmlEditor");
+    const editor = document.getElementById("counterValidator");
     const limit = textLimit;
 
     if (!editor) return;

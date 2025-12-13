@@ -9,7 +9,7 @@
 <div>
     <span style="font-size:30px; font-weight:bold;">Instant onInput JS counter and validator</span>
 </div>
-<input id="htmlEditor" @bind="@TestValue" autocomplete="off" />@*@oninput="e => {TestValue = e.Value?.ToString();}*@
+<input id="counterValidator" @bind="@TestValue" autocomplete="off" />@*@oninput="e => {TestValue = e.Value?.ToString();}*@
                
 <div>
     Left characters: @(CharactersLeft > 0 ? CharactersLeft : 0)

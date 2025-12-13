@@ -5,6 +5,7 @@
 @using WebDevelopment.Shared.DTO
 @using WebDevelopment.Shared.Enums
 @using WebDevelopment.Shared.Interfaces
+@using WebDevelopment.Shared.Modal.ModalSize
 
 @inject ICountryService CountryService
 @inject NavigationManager NavigationManager
@@ -62,21 +63,22 @@ else
 
 
 <button class="btn btn-primary" @onclick="OpenModal">Add New User</button>
+@if (_ShowModal)
+{
 
-<BaseModal 
-    @bind-IsOpen="IsModalOpen"
-    Title="Add new user"
-    Size="medium"
+    <BaseModal 
+    Title="Add country"
+    Size="@ModalSize.Small"
     OnConfirm="SaveUser"
     OnCancel="CancelModal">
 
-    <EditForm Model="@UserModelTest">
-        <InputText class="form-control" @bind-Value="UserModelTest.Name" />
-        <InputText class="form-control mt-2" @bind-Value="UserModelTest.Email" />
-    </EditForm>
+        <EditForm Model="@UserModelTest">
+            <InputText class="form-control" @bind-Value="UserModelTest.Name" />
+            <InputText class="form-control mt-2" @bind-Value="UserModelTest.Email" />
+        </EditForm>
 
-</BaseModal>
-
+    </BaseModal>
+}
 
 @* <script>
     function copyText(text) {
@@ -89,6 +91,7 @@ else
     public List<CountryDto> Countries { get; set; } = [];
     public string IdToUse { get; set; } = string.Empty;
     public bool IsLoading { get; set; } = true;
+    public bool _ShowModal { get; set; } = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -129,6 +132,13 @@ else
         return display?.GetName() ?? enumValue.ToString();
     }
 
+
+
+
+
+
+
+
     private bool IsModalOpen = false;
 
     private UserModel UserModelTest = new();
@@ -136,17 +146,18 @@ else
     void OpenModal()
     {
         UserModelTest = new();
-        IsModalOpen = true;
+        _ShowModal = true;
     }
 
     async Task SaveUser()
     {
-        // save user logic
+        _ShowModal = false;
         Console.WriteLine("Saving user: " + UserModelTest.Name);
     }
 
     void CancelModal()
     {
+        _ShowModal = false;
         Console.WriteLine("Modal canceled");
     }
 

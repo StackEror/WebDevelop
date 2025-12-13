@@ -19,20 +19,34 @@
         box-shadow: 0 5px 25px rgba(0,0,0,0.2);
         display: flex;
         flex-direction: column;
-        animation: fadeIn 0.25s ease;
+    }
+    /*
+        width: 750px;
+        min-width: 280px;
+        background: white;
+        box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+        border-radius: 16px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    */
+
+    .modal-window.small {
+        width: 400px;
     }
 
-        .modal-window.small {
-            width: 300px;
-        }
+    .modal-window.medium {
+        width: 500px;
+    }
 
-        .modal-window.medium {
-            width: 500px;
-        }
-
-        .modal-window.large {
-            width: 800px;
-        }
+    .modal-window.large {
+        width: 700px;
+    }
+    .modal-window.extra-large {
+        width: 900px;
+    }
 
     .modal-header {
         padding: 15px;
@@ -60,210 +74,38 @@
         font-size: 18px;
         cursor: pointer;
     }
-
 </style>
-@if (IsOpen)
-{
-    <div class="modal-overlay">
-        <div class="modal-window @Size">
-            <div class="modal-header">
-                <h3>@Title</h3>
-                <button class="close-btn" @onclick="OnCancelClicked">✖</button>
-            </div>
-
-            <div class="modal-body">
-                @ChildContent
-            </div>
-
-            <div class="modal-footer">
-                @if (ShowCancel)
-                {
-                    <button class="btn btn-secondary" @onclick="OnCancelClicked">Cancel</button>
-                }
-
-                @if (ShowConfirm)
-                {
-                    <button class="btn btn-primary" @onclick="OnConfirmClicked">Confirm</button>
-                }
-            </div>
-        </div>
-    </div>
-}
-
-@code {
-    // Two-way binding
-    [Parameter] public bool IsOpen { get; set; }
-    [Parameter] public EventCallback<bool> IsOpenChanged { get; set; }
-
-    // Modal title
-    [Parameter] public string Title { get; set; } = "Modal";
-
-    // Modal size (small, medium, large)
-    [Parameter] public string Size { get; set; } = "medium";
-
-    // Buttons
-    [Parameter] public bool ShowConfirm { get; set; } = true;
-    [Parameter] public bool ShowCancel { get; set; } = true;
-
-    // Confirm + cancel events
-    [Parameter] public EventCallback OnConfirm { get; set; }
-    [Parameter] public EventCallback OnCancel { get; set; }
-
-    // Content
-    [Parameter] public RenderFragment ChildContent { get; set; }
-
-    private async Task OnConfirmClicked()
-    {
-        await OnConfirm.InvokeAsync();
-        await IsOpenChanged.InvokeAsync(false);
-    }
-
-    private async Task OnCancelClicked()
-    {
-        await OnCancel.InvokeAsync();
-        await IsOpenChanged.InvokeAsync(false);
-    }
-}
-
-
-
-@* DIN BO
-
 <div class="modal-overlay">
-    <div class="modal-container modal--primary">
+    <div class="modal-window @Size">
         <div class="modal-header">
-            <div class="modal-title">
-                Încărcați fișierul cu răspunsul redactat pentru această petiție
-            </div>
-            <button class="close-btn">×</button>
+            <h3>@Title</h3>
+            <button class="close-btn" @onclick="OnCancelClicked"> <i class="fa-solid fa-xmark"></i></button>
         </div>
+
+
         <div class="modal-body">
-            <div class="modal-content1">
-                <div class="d-flex flex-column">
-                    <div class="mb-1">
-                        <button class="modal-button-confirm">
-                            <i class="bi bi-cloud-arrow-up-fill" style="margin-right:1rem">
-
-                            </i> Atașează
-                            <input style="width: inherit; opacity: 0; position: absolute; cursor: pointer;" accept=".pdf" type="file" _bl_20="">
-
-                        </button>
-                        <style>
-                            .modal-button-confirm {
-                                height: 45px;
-                                min-width: 72px;
-                                padding: 0 10px;
-                                border-radius: 16px;
-                                font-size: 16px;
-                                font-family: Onest, sans-serif;
-                                font-weight: 500;
-                                line-height: 24px;
-                                cursor: pointer;
-                                transition: all 0.2s ease-in-out;
-                                background: #4B6ED2;
-                                color: white;
-                                border: 2px solid transparent;
-                            }
-
-                                .modal-button-confirm:hover {
-                                    background: #3e65d5;
-                                }
-                        </style>
-                    </div>
-                    <span class="text-muted" style="font-size: 0.9rem;">
-                        Formatul accepat: .pdf, Dimensiune maximă: 20 MB
-                    </span>
-                </div>
-                <br>
-            </div>
+            @ChildContent
         </div>
+
         <div class="modal-footer">
-            <button class="modal-button-cancel">Anulează</button>
-            <button class="modal-button-confirm">Salvează</button>
+            <button class="btn btn-secondary" @onclick="OnCancelClicked">Cancel</button>
+            <button class="btn btn-primary" @onclick="OnConfirmClicked">Confirm</button>
         </div>
     </div>
 </div>
-*@
 
+@code {
+    [Parameter] public string Title { get; set; } = "Modal_Title";
 
+    [Parameter] public string Size { get; set; } = "medium";
 
+    [Parameter] public EventCallback OnConfirm { get; set; }
+    [Parameter] public EventCallback OnCancel { get; set; }
 
+    [Parameter] public RenderFragment ChildContent { get; set; }
 
+    private async Task OnConfirmClicked() => await OnConfirm.InvokeAsync();
 
-@* 
-                  <style>
-                    
-                    
-                    .modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.4);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1100;
-}
-.modal-container {
-    width: 750px;
-    min-width: 280px;
-    background: white;
-    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.08);
-    overflow: hidden;
-    border-radius: 16px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    private async Task OnCancelClicked() => await OnCancel.InvokeAsync();
 }
 
-.modal-header {
-    align-self: stretch;
-    padding: 24px 20px 0 32px;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-}
-.modal-title {
-    flex: 1 1 0;
-    color: #121212;
-    font-size: 24px;
-    font-family: Onest, sans-serif;
-    font-weight: 600;
-    line-height: 32px;
-    word-wrap: break-word;
-    display: flex;
-    align-items: center;
-}
-.close-btn {
-    width: 32px;
-    height: 32px;
-    border: none;
-    background: transparent;
-    border-radius: 50%;
-    font-size: 18px;
-    font-weight: bold;
-    line-height: 0;
-    cursor: pointer;
-    color: #444444;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    transition: all 0.2s ease-in-out;
-}
-                    </style>
-
-
-
-
-
-
-
-
-
-
-
-
-    *@
