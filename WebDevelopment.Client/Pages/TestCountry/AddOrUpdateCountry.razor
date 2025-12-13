@@ -16,6 +16,9 @@
 }
 else
 {
+    <button type="button" class="btn btn-primary m-3" @onclick="NavigateBack">
+        Go back
+    </button>
     <EditForm Model="@Country" OnSubmit="@(async () => await SaveChanges(Country))" FormName="AddCountry">
 
         <p>PeopleCount</p>
@@ -60,7 +63,7 @@ else
 
 
 @code {
-    [Parameter] public string? ModelId { get; set; } = string.Empty;
+    [Parameter] public string ModelId { get; set; } = string.Empty;
     private CountryDto Country { get; set; } = new();
     private List<CountryDto> Countries { get; set; } = [];
     private bool IsLoading { get; set; } = true;
@@ -85,15 +88,15 @@ else
 
     private async Task SaveChanges(CountryDto? country)
     {
-        if (country != null && ModelId == string.Empty)
+        if (country != null && string.IsNullOrEmpty(ModelId))
         {
             await CountryService.Add(country);
-            NavigationManager.NavigateTo($"custom-page");
+            NavigationManager.NavigateTo($"list-page");
         }
         else if (country != null && ModelId != string.Empty)
         {
             var result = await CountryService.Update(country);
-            NavigationManager.NavigateTo($"custom-page");
+            NavigationManager.NavigateTo($"list-page");
         }
         else
             return;
@@ -134,4 +137,8 @@ else
         return display?.GetName() ?? enumValue.ToString();
     }
 
+    private void NavigateBack()
+    {
+        NavigationManager.NavigateTo("list-page");
+    }
 }

@@ -18,7 +18,7 @@ else
     <button type="button" class="btn btn-primary m-3" @onclick="() => NavToAddOrUpdate()">Add country</button>
 
 
-    <table class="table">
+    <table class="table table-bordered table-striped">
         @*class="table table-bordered table-striped">*@
         <thead>
             <tr>
@@ -58,6 +58,24 @@ else
         </tbody>
     </table>
 }
+
+
+
+<button class="btn btn-primary" @onclick="OpenModal">Add New User</button>
+
+<BaseModal 
+    @bind-IsOpen="IsModalOpen"
+    Title="Add new user"
+    Size="medium"
+    OnConfirm="SaveUser"
+    OnCancel="CancelModal">
+
+    <EditForm Model="@UserModelTest">
+        <InputText class="form-control" @bind-Value="UserModelTest.Name" />
+        <InputText class="form-control mt-2" @bind-Value="UserModelTest.Email" />
+    </EditForm>
+
+</BaseModal>
 
 
 @* <script>
@@ -109,5 +127,32 @@ else
         var display = member.GetCustomAttribute<DisplayAttribute>();
 
         return display?.GetName() ?? enumValue.ToString();
+    }
+
+    private bool IsModalOpen = false;
+
+    private UserModel UserModelTest = new();
+
+    void OpenModal()
+    {
+        UserModelTest = new();
+        IsModalOpen = true;
+    }
+
+    async Task SaveUser()
+    {
+        // save user logic
+        Console.WriteLine("Saving user: " + UserModelTest.Name);
+    }
+
+    void CancelModal()
+    {
+        Console.WriteLine("Modal canceled");
+    }
+
+    public class UserModel
+    {
+        public string Name { get; set; }
+        public string Email { get; set; }
     }
 }
