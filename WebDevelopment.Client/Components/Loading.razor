@@ -15,9 +15,21 @@
             <span class="visually-hidden">Loading...</span>
         </div>
     </div> *@
-<div class="d-flex justify-content-center align-items-center" style="height: 100vh;">
+<div class="d-flex justify-content-center align-items-center spinner-overlay" style="height: 100vh;">
     @* <div class="spinner-border text-primary" style="width: 80px;height: 80px;border: 10px solid #ccc;border-top-color: #007bff;border-radius: 50%;" role="status">
             <span class="visually-hidden">Loading...</span>
         </div> *@
     <i class="fa-solid fa-spinner fa-spin fa-5x" style="color: #7387ac;"></i>
 </div>
+
+<style>
+
+    .spinner-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.7);
+    }
+</style>

@@ -1,4 +1,70 @@
-﻿
+﻿<div class="modal-overlay">
+    <div class="modal-window @Size">
+        <div class="modal-header">
+            <h3>@Title</h3>
+            <button class="close-btn" @onclick="OnCancelClicked"> <i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <div class="modal-body">
+            <div>
+                @if (ShowLoading && IsProcessing)
+                {
+                    <Loading />
+                }
+            </div>
+            @ChildContent
+        </div>
+
+        <div class="modal-footer">
+            <button class="modal-button-cancel" disabled="@IsDisabled" @onclick="OnCancelClicked">@CancelButtonText</button>
+            <button class="modal-button-confirm" disabled="@IsDisabled" @onclick="OnConfirmClicked">@ConfirmButtonText</button>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public string Title { get; set; } = "Modal_Title";
+    [Parameter] public string Size { get; set; } = "medium";
+
+    [Parameter] public string CancelButtonText { get; set; } = "Cancel";
+    [Parameter] public string ConfirmButtonText { get; set; } = "Confirm";
+
+    [Parameter] public bool CancelButtonDisabled { get; set; } = false;
+    [Parameter] public bool ConfirmButtonDisabled { get; set; } = false;
+    [Parameter] public bool ShowLoading { get; set; } = false;
+
+    private bool IsDisabled { get; set; } = false;
+    private bool IsProcessing { get; set; } = false;
+
+    [Parameter] public EventCallback OnConfirm { get; set; }
+    [Parameter] public EventCallback OnCancel { get; set; }
+
+    [Parameter] public RenderFragment ChildContent { get; set; }
+
+    private async Task OnConfirmClicked() //=> await OnConfirm.InvokeAsync();
+    {
+        if (IsProcessing)
+            return;
+
+        IsProcessing = true;
+        IsDisabled = true;
+        StateHasChanged();
+
+        try
+        {
+            await OnConfirm.InvokeAsync();
+            //Prima data se face HideModal() din componenta parinte apoi se face codul de mai jos  IsProcessing = false;
+        }
+        finally
+        {
+            IsDisabled = false;
+            IsProcessing = false;
+        }
+    }
+    private async Task OnCancelClicked() => await OnCancel.InvokeAsync();
+}
+
+
 <style>
     .modal-overlay {
         position: fixed;
@@ -10,7 +76,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        z-index: 9999;
+        z-index: 10000;
     }
 
     .modal-window {
@@ -21,20 +87,21 @@
         flex-direction: column;
     }
 
-    .modal-window.small {
-        width: 400px;
-    }
+        .modal-window.small {
+            width: 400px;
+        }
 
-    .modal-window.medium {
-        width: 500px;
-    }
+        .modal-window.medium {
+            width: 500px;
+        }
 
-    .modal-window.large {
-        width: 700px;
-    }
-    .modal-window.extra-large {
-        width: 900px;
-    }
+        .modal-window.large {
+            width: 700px;
+        }
+
+        .modal-window.extra-large {
+            width: 900px;
+        }
 
     .modal-header {
         padding: 15px;
@@ -77,15 +144,24 @@
         transition: all 0.2s ease-in-out;
     }
 
+        .modal-button-confirm:disabled,
+        .modal-button-cancel:disabled {
+            /* Background for confirm button
+                        background-color: #8aa2e8; */
+            opacity: 0.8;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
     .modal-button-cancel {
         background: transparent;
         color: #4B6ED2;
         border: 2px solid #4B6ED2;
     }
 
-    /* .modal-button-cancel:hover {
-        background: #e7f1ff;
-    } */
+        .modal-button-cancel:hover {
+            background: #e7f1ff;
+        }
 
     .modal-button-confirm {
         background: #4B6ED2;
@@ -93,41 +169,8 @@
         border: 2px solid transparent;
     }
 
-    /* .modal-button-confirm:hover {
-        background: #3e65d5;
-    } */
+        .modal-button-confirm:hover {
+            background: #3e65d5;
+        }
 </style>
-<div class="modal-overlay">
-    <div class="modal-window @Size">
-        <div class="modal-header">
-            <h3>@Title</h3>
-            <button class="close-btn" @onclick="OnCancelClicked"> <i class="fa-solid fa-xmark"></i></button>
-        </div>
-
-
-        <div class="modal-body">
-            @ChildContent
-        </div>
-
-        <div class="modal-footer">
-            <button class="modal-button-cancel" @onclick="OnCancelClicked">Cancel</button>
-            <button class="modal-button-confirm" @onclick="OnConfirmClicked">Confirm</button>
-        </div>
-    </div>
-</div>
-
-@code {
-    [Parameter] public string Title { get; set; } = "Modal_Title";
-
-    [Parameter] public string Size { get; set; } = "medium";
-
-    [Parameter] public EventCallback OnConfirm { get; set; }
-    [Parameter] public EventCallback OnCancel { get; set; }
-
-    [Parameter] public RenderFragment ChildContent { get; set; }
-
-    private async Task OnConfirmClicked() => await OnConfirm.InvokeAsync();
-
-    private async Task OnCancelClicked() => await OnCancel.InvokeAsync();
-}
 
