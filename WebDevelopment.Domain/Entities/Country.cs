@@ -4,6 +4,7 @@ namespace WebDevelopment.Domain.Entities;
 
 public class Country : BaseEntity
 {
+    public string Name { get; set; } = string.Empty;
     public int PeopleCount { get; set; }
     public string? Type { get; set; }
     public RankEnum Rank { get; set; }

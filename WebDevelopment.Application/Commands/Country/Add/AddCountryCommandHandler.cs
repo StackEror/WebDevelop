@@ -20,7 +20,7 @@ namespace WebDevelopment.Application.Commands.Country.Add
 
                 var country = _mapper.Map<Domain.Entities.Country>(request.country);
                 country.CreatedAt = DateTime.Now;
-                country.UpdatedAt = DateTime.Now;
+                country.ModifiedAt = DateTime.Now;
 
                 await _dbContext.AddAsync(country);
                 await _dbContext.SaveChangesAsync();    

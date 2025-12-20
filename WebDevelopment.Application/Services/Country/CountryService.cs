@@ -23,7 +23,7 @@ public class CountryService(
             var countryEntity = _mapper.Map<Domain.Entities.Country>(country);
 
             countryEntity.CreatedAt = DateTime.Now;
-            countryEntity.UpdatedAt = DateTime.Now;
+            countryEntity.ModifiedAt = DateTime.Now;
             await _dbContext.AddAsync(countryEntity);
             await _dbContext.SaveChangesAsync();
 
@@ -46,7 +46,7 @@ public class CountryService(
             if (dbEntity != null)
             {
                 _mapper.Map(country, dbEntity);
-                dbEntity.UpdatedAt = DateTime.Now;
+                dbEntity.ModifiedAt = DateTime.Now;
                 await _dbContext.SaveChangesAsync();
                 return new Response();
             }

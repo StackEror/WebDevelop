@@ -10,7 +10,7 @@ namespace WebDevelopment.Shared.DTO
         public string Name { get; set; }
         public string? Description { get; set; } =  "TestDescription";
         public DateTime CreatedAt { get; set; }
-        public DateTime UpdatedAt { get; set; }
+        public DateTime ModifiedAt { get; set; }
         public int PeopleCount { get; set; }
         public string? Type { get; set; }
         [Required(ErrorMessage = "Rank is required")]

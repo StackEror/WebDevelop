@@ -24,7 +24,7 @@ namespace WebDevelopment.Application.Commands.Country.Update
                 if (dbEntity != null)
                 {
                     _mapper.Map(request.country, dbEntity);
-                    dbEntity.UpdatedAt = DateTime.Now;
+                    dbEntity.ModifiedAt = DateTime.Now;
                     await _dbContext.SaveChangesAsync();
                     return new Response();
                 }
