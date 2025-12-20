@@ -18,7 +18,6 @@ var connectionString = builder.Configuration.GetConnectionString("Default") ??
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
 
 builder.Services.AddAplication();
-builder.Services.AddScoped<ICountryService, CountryService>();
 
 
 var app = builder.Build();

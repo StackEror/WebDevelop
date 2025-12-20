@@ -1,6 +1,8 @@
 ﻿@page "/test"
 @using WebDevelopment.Shared.DTO
+@using WebDevelopment.Shared.Interfaces
 
+@inject IFileService FileService
 
 
 <InputFile OnChange="OnFileChanged">
@@ -8,16 +10,31 @@
 
 </InputFile>
 
-@if(FileDto.Content != null)
+@if (fileList != null && fileList.Any())
 {
-    <img src="@($"data:{FileDto.ContentType};base64,{Convert.ToBase64String(FileDto.Content)}")" />
+    @foreach (var item in fileList)
+    {
+        <div>
+            <img src="@($"data:{item.ContentType};base64,{Convert.ToBase64String(item.Content)}")" />
+        </div>
+    }
 }
 
+<button type="button" class="btn btn-primary m-3" @onclick="() => AddFile(FileDto)">Add File</button>
+@if (IdToSearch != Guid.Empty && FileDto.Content != null)
+{
+    <div>
+        <img src="@($"data:{FileDto.ContentType};base64,{Convert.ToBase64String(FileDto.Content)}")" />
+    </div>
+}
+<button type="button" class="btn btn-primary m-3" @onclick="() => GetById(IdToSearch)">Get</button>
 
 
 
 @code {
     private FileDto FileDto { get; set; } = new();
+    private Guid IdToSearch { get; set; } = new();
+    private List<FileDto> fileList { get; set; } = new();
 
 
     private async Task OnFileChanged(InputFileChangeEventArgs file)
@@ -25,10 +42,9 @@
         if (file == null)
             return;
 
-        int maxFileSizeBytes = 2 * 1024 * 1024;
+        int maxFileSizeBytes = 5 * 1024 * 1024;
 
         using var memoryStream = new MemoryStream();
-
 
 
         var files = file.GetMultipleFiles().ToList();
@@ -39,5 +55,17 @@
         FileDto.ContentType = file.File.ContentType;
         FileDto.Content = memoryStream.ToArray();
         FileDto.Name = firstFile.Name;
+    }
+    private async Task AddFile(FileDto fileDto)
+    {
+        var response = await FileService.Add(fileDto);
+        IdToSearch = response.Data;
+        fileList.Add(fileDto);
+        FileDto = new();
+    }
+    private async Task GetById(Guid Id)
+    {
+        var response = await FileService.GetById(Id);
+        FileDto = response.Data;
     }
 }

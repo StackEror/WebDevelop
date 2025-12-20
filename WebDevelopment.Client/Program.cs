@@ -14,6 +14,7 @@ builder.Services.AddScoped(sp => new HttpClient
 });
 
 builder.Services.AddScoped<ICountryService, CountryService>();
+builder.Services.AddScoped<IFileService, FileService>();
 
 var app = builder.Build();
 
