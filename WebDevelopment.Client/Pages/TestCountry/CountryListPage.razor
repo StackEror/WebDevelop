@@ -42,9 +42,7 @@ else
 {
     <button type="button" class="btn btn-primary m-3" @onclick="() => NavToAddOrUpdate()">Add Or Update Country</button>
 
-
     <table class="table table-bordered table-striped">
-        @*class="table table-bordered table-striped">*@
         <thead>
             <tr>
                 <th>Id </th>
@@ -87,9 +85,6 @@ else
 }
 
 
-
-
-
 @if (_showAddModal)
 {
 
@@ -98,18 +93,21 @@ else
 
         <EditForm EditContext="EditContext" FormName="AddCountry">
             <DataAnnotationsValidator></DataAnnotationsValidator>
+            
+            
             <label class="input-label">PeopleCount</label>
             <InputNumber class="form-control" @bind-Value="@Country.PeopleCount"></InputNumber>
+
 
             <label class="input-label">Type</label>
             <InputText class="form-control" @bind-Value="@Country.Type"></InputText>
 
+
             <label class="input-label">Name</label>
             <InputText class="form-control" @bind-Value="@Country.Name"></InputText>
             <ValidationMessage For="() => Country.Name"></ValidationMessage>
-
-
-
+            
+            
             <label class="input-label">Continent</label>
             <InputSelect class="form-select no-arrow-select" TValue="ContinentEnum?" @bind-Value="@Country.Continent">
                 <option value="">Select...</option>
@@ -119,10 +117,8 @@ else
                 }
             </InputSelect>
             <ValidationMessage For="() => Country.Continent"></ValidationMessage>
-
-
-
-
+            
+            
             <label class="input-label">CountrySize</label>
             <InputSelect class="form-select" TValue="CountrySizeEnum?" @bind-Value="@Country.CountrySize">
                 <option value="">Select...</option>
@@ -181,7 +177,6 @@ else
     protected override async Task OnInitializedAsync()
     {
         await GetList();
-        await Task.Delay(100);
         EditContext = new EditContext(Country);
         IsLoading = false;
         StateHasChanged();
@@ -229,7 +224,6 @@ else
         StateHasChanged();
     }
 
-
     private void ShowAddModal() => _showAddModal = true;
     private void HideAddModal() => _showAddModal = false;
     private void ShowDeleteModal(Guid Id)
@@ -238,7 +232,6 @@ else
         _showDeleteModal = true;
     }
     private void HideDeleteModal() => _showDeleteModal = false;
-
 
     private string GetEnumName(Enum? value) => EnumExtensions.GetDisplayName(value);
 }
