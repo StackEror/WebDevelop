@@ -8,7 +8,6 @@ namespace WebDevelopment.Shared.DTO
         public Guid Id { get; set; }
         [Required(ErrorMessage = "Name is required")]
         public string Name { get; set; }
-        public string? Description { get; set; } =  "TestDescription";
         public DateTime CreatedAt { get; set; }
         public DateTime ModifiedAt { get; set; }
         public int PeopleCount { get; set; }
