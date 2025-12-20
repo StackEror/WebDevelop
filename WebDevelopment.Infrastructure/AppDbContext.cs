@@ -11,4 +11,5 @@ public class AppDbContext : DbContext
     }
     public DbSet<Country> Countries { get; set; }
     public DbSet<User> Users { get; set; }
+    public DbSet<Domain.Entities.File> Files { get; set; }
 }
