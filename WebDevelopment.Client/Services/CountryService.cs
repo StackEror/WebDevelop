@@ -1,4 +1,5 @@
-﻿using WebDevelopment.Shared.DTO;
+﻿using System.Net;
+using WebDevelopment.Shared.DTO;
 using WebDevelopment.Shared.Interfaces;
 using WebDevelopment.Shared.Responses;
 
@@ -55,9 +56,15 @@ namespace WebDevelopment.Client.Services
         {
             var response = await _httpClient.PostAsJsonAsync("api/country/add", country);
 
-            var result = await response.Content.ReadFromJsonAsync<Guid>();
-
-            return new Response<Guid>(result);
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                var result = await response.Content.ReadFromJsonAsync<Guid>();
+                return new Response<Guid>(result);
+            }
+            else
+            {
+                return new Response<Guid>(Guid.Empty) { IsSuccess = false };
+            }
         }
     }
 }

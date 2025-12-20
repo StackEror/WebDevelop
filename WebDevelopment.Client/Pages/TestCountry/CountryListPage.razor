@@ -2,6 +2,7 @@
 
 @using System.ComponentModel.DataAnnotations
 @using System.Reflection
+@using WebDevelopment.Client.Extensions
 @using WebDevelopment.Shared.DTO
 @using WebDevelopment.Shared.Enums
 @using WebDevelopment.Shared.Interfaces
@@ -10,6 +11,29 @@
 @inject ICountryService CountryService
 @inject NavigationManager NavigationManager
 
+
+<style>
+    /* Dezactivare sageti de la InputNumner */
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    .input-label {
+        margin-top:15px;
+        display:inline-block
+    }
+
+    /* Scoatere sageata la input-select*/
+    .no-arrow-select {
+        background-image: none; 
+    }
+    /* Dezactivare border, outline verde la input valid*/
+    .valid.modified:not([type=checkbox]) {
+        outline: none;
+    }
+</style>
 @if (IsLoading)
 {
     <Loading />
@@ -41,9 +65,9 @@ else
                 <tr>
                     <th id="textToCopy">@item.Id</th>@*<button onclick="copyText('@item.Id')">Copy</button>*@
                     <th>@item.Name</th>
-                    <th>@GetDisplayName(item.Continent)</th>
-                    <th>@GetDisplayName(item.Rank)</th>
-                    <th>@GetDisplayName(item.CountrySize)</th>
+                    <th>@(EnumExtensions.GetDisplayName(item.Continent))</th>
+                    <th>@item.Rank.GetDisplayName()</th>
+                    <th>@GetEnumName(item.CountrySize)</th>
                     <th>@item.CreatedAt</th>
                     <th>@item.UpdatedAt</th>
                     <th>@item.PeopleCount</th>
@@ -66,27 +90,28 @@ else
 
 
 
-@if (_ShowAddModal)
+@if (_showAddModal)
 {
 
-    <BaseModal Title="Add new country" Size="@ModalSize.Medium" OnCancel="HideAddModal" OnConfirm="AddCountry">@*async () => await Add(Country)*@
+    <BaseModal Title="Add new country" Size="@ModalSize.Medium" OnCancel="HideAddModal" OnConfirm="AddCountry">
+        @*async () => await Add(Country)*@
 
         <EditForm EditContext="EditContext" FormName="AddCountry">
             <DataAnnotationsValidator></DataAnnotationsValidator>
-            <p>PeopleCount</p>
-            <InputNumber @bind-Value="@Country.PeopleCount"></InputNumber>
+            <label class="input-label">PeopleCount</label>
+            <InputNumber class="form-control" @bind-Value="@Country.PeopleCount"></InputNumber>
 
-            <p style="margin-top:10px;">Type</p>
-            <InputText @bind-Value="@Country.Type"></InputText>
+            <label class="input-label">Type</label>
+            <InputText class="form-control" @bind-Value="@Country.Type"></InputText>
 
-            <p style="margin-top:10px;">Name</p>
-            <InputText @bind-Value="@Country.Name"></InputText>
+            <label class="input-label">Name</label>
+            <InputText class="form-control" @bind-Value="@Country.Name"></InputText>
             <ValidationMessage For="() => Country.Name"></ValidationMessage>
 
 
 
-            <p style="margin-top:10px;">Continent</p>
-            <InputSelect TValue="ContinentEnum?" @bind-Value="@Country.Continent">
+            <label class="input-label">Continent</label>
+            <InputSelect class="form-select no-arrow-select" TValue="ContinentEnum?" @bind-Value="@Country.Continent">
                 <option value="">Select...</option>
                 @foreach (var val in Enum.GetValues(typeof(ContinentEnum)).Cast<ContinentEnum>())
                 {
@@ -98,8 +123,8 @@ else
 
 
 
-            <p style="margin-top:10px;">CountrySize</p>
-            <InputSelect TValue="CountrySizeEnum?" @bind-Value="@Country.CountrySize">
+            <label class="input-label">CountrySize</label>
+            <InputSelect class="form-select" TValue="CountrySizeEnum?" @bind-Value="@Country.CountrySize">
                 <option value="">Select...</option>
                 @foreach (var val in Enum.GetValues(typeof(CountrySizeEnum)).Cast<CountrySizeEnum>())
                 {
@@ -109,8 +134,8 @@ else
             <ValidationMessage For="() => Country.CountrySize"></ValidationMessage>
 
 
-            <p style="margin-top:10px;">Rank</p>
-            <InputSelect TValue="RankEnum?" @bind-Value="@Country.Rank">
+            <label class="input-label">Rank</label>
+            <InputSelect class="form-select" TValue="RankEnum?" @bind-Value="@Country.Rank">
                 <option value="">Select...</option>
                 @foreach (var val in Enum.GetValues(typeof(RankEnum)).Cast<RankEnum>())
                 {
@@ -120,7 +145,7 @@ else
             <ValidationMessage For="() => Country.Rank"></ValidationMessage>
 
 
-
+            <label class="input-label">IsIsland</label>
             <InputCheckbox @bind-Value="@Country.IsIsland"></InputCheckbox>
             @* <div>
                 <button type="submit" class="btn btn-primary">Add country</button>
@@ -136,7 +161,7 @@ else
     }
 </script> *@
 
-@if (_ShowDeleteModal)
+@if (_showDeleteModal)
 {
     <BaseModal Title="Confirm" ShowLoading="false" OnCancel="HideDeleteModal" OnConfirm="Delete">
         Are you sure you want to delete this country
@@ -147,8 +172,8 @@ else
     public List<CountryDto> Countries { get; set; } = [];
     public string IdToUse { get; set; } = string.Empty;
     public bool IsLoading { get; set; } = true;
-    public bool _ShowAddModal { get; set; } = false;
-    public bool _ShowDeleteModal { get; set; } = false;
+    public bool _showAddModal { get; set; } = false;
+    public bool _showDeleteModal { get; set; } = false;
     private EditContext EditContext { get; set; }
     private Guid IdToDelete { get; set; }
 
@@ -205,21 +230,15 @@ else
     }
 
 
-    private void ShowAddModal() => _ShowAddModal = true;
-    private void HideAddModal() => _ShowAddModal = false;
+    private void ShowAddModal() => _showAddModal = true;
+    private void HideAddModal() => _showAddModal = false;
     private void ShowDeleteModal(Guid Id)
     {
         IdToDelete = Id;
-        _ShowDeleteModal = true;
+        _showDeleteModal = true;
     }
-    private void HideDeleteModal() => _ShowDeleteModal = false;
+    private void HideDeleteModal() => _showDeleteModal = false;
 
-    public static string GetDisplayName(Enum enumValue)
-    {
-        var member = enumValue.GetType().GetMember(enumValue.ToString()).First();
-        var display = member.GetCustomAttribute<DisplayAttribute>();
 
-        return display?.GetName() ?? enumValue.ToString();
-    }
-
+    private string GetEnumName(Enum? value) => EnumExtensions.GetDisplayName(value);
 }
