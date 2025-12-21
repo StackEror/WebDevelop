@@ -8,7 +8,7 @@ var configurationBuilder = new ConfigurationBuilder()
     .AddEnvironmentVariables();
 
 var configuration = configurationBuilder.Build();
-var connectionString = "Server=localhost,1500;Database=WebDevelopment;User Id=sa;Password=noPassword123!!!yes;TrustServerCertificate=True;Encrypt=False";
+var connectionString = configuration.GetConnectionString("Default") ?? string.Empty;
 
 var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>()
     .UseSqlServer(connectionString);

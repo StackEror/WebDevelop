@@ -20,5 +20,10 @@
 	<ItemGroup>
 		<ProjectReference Include="..\WebDevelopment.Infrastructure\WebDevelopment.Infrastructure.csproj" />
 	</ItemGroup>
-
+	
+	<ItemGroup>
+		<None Update="appsettings.json">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
 </Project>
