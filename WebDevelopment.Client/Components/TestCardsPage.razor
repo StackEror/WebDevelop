@@ -1,0 +1,92 @@
+﻿@page "/page"
+
+@using WebDevelopment.Client.Components.UIElements
+@using WebDevelopment.Shared.DTO
+@using WebDevelopment.Shared.Interfaces
+
+@inject ICountryService CountryService
+<div class="flex-container">
+    <div class="main-content">
+        <div class="main-content-wrapper">
+            <Card>
+                <ChildContent>
+                    <div>CONTANER CONTANER CONTANER</div>
+                    <div>CONTANER CONTANER CONTANER</div>
+                    <div>CONTANER CONTANER CONTANER</div>
+                </ChildContent>
+            </Card>
+
+            <Card>
+                <div>CONTANER CONTANER CONTANER</div>
+                <div>CONTANER CONTANER CONTANER</div>
+                <div>CONTANER CONTANER CONTANER</div>
+            </Card>
+            <Card>
+                <div>CONTANER CONTANER CONTANER</div>
+                <div>CONTANER CONTANER CONTANER</div>
+                <div>CONTANER CONTANER CONTANER</div>
+            </Card>
+            <Card>
+                <ChildContent>
+                    <div>CONTANER CONTANER CONTANER</div>
+                    <div>CONTANER CONTANER CONTANER</div>
+                    <div>CONTANER CONTANER CONTANER</div>
+                </ChildContent>
+            </Card>
+
+            <Card>
+                <div>CONTANER CONTANER CONTANER</div>
+                <div>CONTANER CONTANER CONTANER</div>
+                <div>CONTANER CONTANER CONTANER</div>
+            </Card>
+            <Card>
+                <div class="cards-section-container-wraper">
+                    <InfoRow Label="Label" Value="Value" FlexRow="true"></InfoRow>
+                    <InfoRow Label="Label" Value="Value" FlexRow="true"></InfoRow>
+                    <InfoRow Label="Label" Value="Value" FlexRow="true"></InfoRow>
+                    <InfoRow Label="Label" Value="Value" FlexRow="true"></InfoRow>
+                    <InfoRow Label="Label" Value="Value" FlexRow="true"></InfoRow>
+                    <InfoRow Label="Label" Value="Value" FlexRow="true"></InfoRow>
+                </div>
+            </Card>
+            <Card>
+                <ChildContent>
+                    <div>CONTANER CONTANER CONTANER</div>
+                    <div>CONTANER CONTANER CONTANER</div>
+                    <div>CONTANER CONTANER CONTANER</div>
+                </ChildContent>
+            </Card>
+
+            <Card>
+                <div>CONTANER CONTANER CONTANER</div>
+                <div>CONTANER CONTANER CONTANER</div>
+                <div>CONTANER CONTANER CONTANER</div>
+            </Card>
+            <Card>
+                <div>CONTANER CONTANER CONTANER</div>
+                <div>CONTANER CONTANER CONTANER</div>
+                <div>CONTANER CONTANER CONTANER</div>
+            </Card>
+        </div>
+    </div>
+</div>
+
+<style>
+    .main-content-wrapper {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .default-card-style {
+        min-height: 200px;
+    }
+</style>
+
+@code {
+    public List<CountryDto> Countries { get; set; } = [];
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await CountryService.GetList();
+        Countries = result.Data;
+    }
+
+}

@@ -1,0 +1,11 @@
+﻿<div class="default-card-style">
+    @if(ChildContent != null)
+    {
+        @ChildContent
+    }
+
+</div>
+
+@code {
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+}

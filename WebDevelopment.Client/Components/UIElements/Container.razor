@@ -1,0 +1,52 @@
+﻿<div class="flex-container">
+    <div class="main-content">
+        <div class="main-content-wrapper">
+            <div class="left-column">
+                <div class="cards-section-container-wraper">
+                    <Card> <div>CONTANER CONTANER CONTANER</div></Card>
+                    <Card> <div>CONTANER CONTANER CONTANER</div></Card>
+                    <Card> <div>CONTANER CONTANER CONTANER</div></Card>
+                </div>
+            </div>
+            <div class="right-column">
+                <div class="default-card-style card-with-cards">
+                    <div class="card-with-cards-header">
+                        <span class="card-with-cards-card-icon">
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </span>
+                        <span class="card-with-cards-card-title">
+                            Titlul
+                        </span>
+                    </div>
+                    <div class="timeline-container">
+                        @foreach (var country in Enumerable.Range(1, 10).ToList())
+                        {
+                            <div class="card-with-cards-card-item">
+                                <div class="card-with-cards-card-item-icon">
+                                    <i class="fa-solid fa-arrow-right"></i>
+                                </div>
+                                <div class="card-with-cards-card-item-content">
+                                    <div class="card-with-cards-card-item-title">TITLE</div>
+                                    <div class="card-with-cards-card-item-description">description : description</div>
+                                    <div class="card-with-cards-card-item-description">description : description</div>
+                                    <div class="card-with-cards-card-item-description">description : description</div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card-with-cards::-webkit-scrollbar {
+        width: 0px;
+        background: transparent;
+    }
+</style>
+
+@code {
+
+}

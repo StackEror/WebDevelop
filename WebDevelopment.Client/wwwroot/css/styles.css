@@ -1,0 +1,167 @@
+﻿/*Card component*/
+.default-card-style {
+    background-color: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    border: 1px solid #e8eaed;
+    word-break: break-word;
+}
+
+
+
+/*Info row component*/
+.element-info-row {
+    display: flex;
+    align-items: baseline;
+    margin-bottom: 12px;
+}
+.element-info-label {
+    font-size: 19px;
+    color: #1c1d1f;
+    margin-bottom: 4px;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+}
+.element-info-value {
+    font-size: 17px;
+    color: #202124;
+    font-weight: 500;
+    margin-left: 5px;
+}
+.flex-column .element-info-row {
+    flex-direction: column;
+}
+.flex-column .element-info-value {
+    margin-left: 0px;
+}
+
+
+
+/*Aranjarea paginii si elementelor paginii*/
+.flex-container {
+    display: flex;
+    min-height: calc(100vh - 48px);
+}
+.main-content {
+    flex: 1;
+    padding: 15px;
+/*    padding-top: 0;*/
+}
+.main-content-wrapper {
+    /*Raport pagina 2 la 1*/
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px;
+}
+.left-column {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+.right-column {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+.cards-section-container-wraper {
+    /*Imparte zona de carduri in, 3 pe rand*/
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+
+/*CARD WITH CARDS*/
+.card-with-cards {
+    /*Adauga scroll vertical pentru cardurile din acest container care se foloseste si mosteneste default-card*/
+/*    position: sticky;*/
+/*    top: 24px;*/
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
+}
+.card-with-cards-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #f0f2f5;
+}
+.card-with-cards-card-icon {
+    width: 20px;
+    height: 20px;
+    color: #5f6368;
+}
+.card-with-cards-card-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #202124;
+}
+
+
+
+/*Timeline line container*/
+.timeline-container {
+    position: relative;
+    padding-left: 17px;
+    padding-top: 5px;
+}
+/*Timeline line*/
+.timeline-container::before {
+    content: '';
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    bottom: 10px;
+    width: 3px;
+    background: #2daf73;
+    border-radius: 2px;
+}
+
+
+
+/*TIMELINE LINE CONTAINER ELEMENTS */
+.card-with-cards-card-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    padding-left: 10px;
+    width: 100%;
+}
+.card-with-cards-card-item-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    border: 3px solid white;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+    flex-shrink: 0;
+}
+.card-with-cards-card-item-content {
+    background-color: #d5eaff;
+    border-radius: 10px;
+    padding: 12px 14px;
+    border: 1px solid #f8f8f8;
+    transition: all 0.2s;
+    flex: 1;
+}
+.card-with-cards-card-item-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #202124;
+    margin-bottom: 4px;
+    line-height: 1.3;
+}
+.card-with-cards-card-item-description {
+    font-size: 12px;
+    color: #5f6368;
+    line-height: 1.4;
+    /*pentru text din rand nou */
+    overflow-wrap: break-word;
+    width: 405px;
+}

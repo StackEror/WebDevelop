@@ -1,0 +1,16 @@
+﻿@if (!string.IsNullOrWhiteSpace(Value))
+{
+    <div class="element-info-row @(FlexRow ? "flex-column" : "")">
+        <div class="element-info-label">@DisplayLabel</div>
+        <div class="element-info-value">@Value</div>
+    </div>
+}
+
+@code {
+    [Parameter] public string Label { get; set; } = string.Empty;
+    public string DisplayLabel => FlexRow ? Label : $"{Label} :";
+
+    [Parameter] public string? Value { get; set; }
+    [Parameter] public bool FlexRow { get; set; } = false;
+
+}
