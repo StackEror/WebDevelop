@@ -1,6 +1,5 @@
 ﻿using System.Net;
-using System.Net.Http;
-using WebDevelopment.Shared.DTO;
+using WebDevelopment.Shared.DTOs;
 using WebDevelopment.Shared.Interfaces;
 using WebDevelopment.Shared.Responses;
 

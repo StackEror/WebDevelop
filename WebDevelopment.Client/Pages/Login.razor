@@ -1,0 +1,262 @@
+﻿@page "/login"
+@layout BlankLayout
+
+@using WebDevelopment.Client.Components.UIElements
+@using WebDevelopment.Client.Interfaces
+@using WebDevelopment.Client.Models
+@using WebDevelopment.Client.Models.User
+@using WebDevelopment.Shared.Interfaces.Authentication
+
+@inject IUserService UserService
+@inject NavigationManager NavigationManager
+
+<style>
+    .default-card-style {
+        width: 600px;
+    }
+
+    .auth-input-group {
+        position: relative;
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+
+        .auth-input-group i {
+            position: absolute;
+            top: 50%;
+            left: 14px;
+            transform: translateY(-50%);
+            color: #9aa0a6;
+            font-size: 16px;
+        }
+
+        .auth-input-group input {
+            width: 100%;
+            padding: 12px 14px 12px 42px;
+            border-radius: 10px;
+            border: 1px solid #d0d5dd;
+            font-size: 15px;
+            outline: none;
+            transition: all 0.2s ease;
+            background-color: #fff;
+        }
+
+            .auth-input-group input::placeholder {
+                color: #9aa0a6;
+            }
+
+            .auth-input-group input:focus {
+                border-color: #4f46e5;
+                box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+            }
+
+                .auth-input-group input:focus + i,
+                .auth-input-group input:focus ~ i {
+                    color: #4f46e5;
+                }
+
+    .auth-btn {
+        width: 100%;
+        padding: 12px;
+        background: #4f46e5;
+        border: none;
+        border-radius: 10px;
+        color: #fff;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.2s ease;
+    }
+
+        .auth-btn:hover {
+            background: #4338ca;
+        }
+
+    .auth-switch {
+        text-align: center;
+        margin-top: 1.25rem;
+        font-size: 14px;
+        color: #6b7280;
+    }
+
+        .auth-switch a {
+            color: #4f46e5;
+            font-weight: 600;
+            margin-left: 4px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+            .auth-switch a:hover {
+                text-decoration: underline;
+            }
+
+</style>
+
+<div class="d-flex" style="justify-content: center; min-height: 80vh; align-items: center;">
+    <Card>
+    @if (IsRegister)
+    {
+            <p class="h4 fw-semibold mb-2 text-center">Register</p>
+
+            <EditForm Model="@NewUserModel" OnValidSubmit="HandleRegister">
+
+                <div class="auth-input-group">
+                    <i class="fa fa-user"></i>
+                    <InputText placeholder="Name"
+                               @bind-Value="NewUserModel.Name" />
+                </div>
+                <ValidationMessage For="(() => NewUserModel.Name)" />
+
+                <div class="auth-input-group">
+                    <i class="fa fa-user"></i>
+                    <InputText placeholder="Surname"
+                               @bind-Value="NewUserModel.Surname" />
+                </div>
+                <ValidationMessage For="(() => NewUserModel.Surname)" />
+
+                <div class="auth-input-group">
+                    <i class="fa fa-user-circle"></i>
+                    <InputText placeholder="Username"
+                               @bind-Value="NewUserModel.UserName" />
+                </div>
+                <ValidationMessage For="(() => NewUserModel.UserName)" />
+
+                <div class="auth-input-group">
+                    <i class="fa fa-envelope"></i>
+                    <InputText placeholder="Email"
+                               @bind-Value="NewUserModel.Email" />
+                </div>
+                <ValidationMessage For="(() => NewUserModel.Email)" />
+
+                <div class="auth-input-group">
+                    <i class="fa fa-lock"></i>
+                    <input type="text"
+                           placeholder="Password"
+                           @bind-value="NewUserModel.Password" />
+                </div>
+                <ValidationMessage For="(() => NewUserModel.Password)" />
+
+                <button type="submit" class="auth-btn">
+                    Register
+                </button>
+
+                @if (!string.IsNullOrEmpty(RegisterErrorMessage))
+                {
+                    <div class="auth-error">
+                        @RegisterErrorMessage
+                    </div>
+                }
+            </EditForm>
+    }
+    else
+    {
+            <EditForm Model="@LoginModel" OnValidSubmit="HandleLogin">
+
+                <p class="h4 fw-semibold mb-2 text-center">Sign In</p>
+
+                @* <div class="col-xl-12" style="justify-items: center;">
+                    <div style="text-align: center;">
+                        <label for="signin-username" class="form-label text-default d-block">Username</label>
+                    </div>
+                    <InputText class="form-control" style="width: 500px;" @bind-Value="LoginModel.UserName" @oninput="OnUserNameChange" />
+                    <ValidationMessage For="(() => LoginModel.UserName)" />
+                </div>
+
+                <div class="col-xl-12" style="justify-items: center;">
+                    <label for="signin-password" class="form-label text-default d-block">Password</label>
+                    <InputText class="form-control" style="width: 500px;" @bind-Value="LoginModel.Password" />
+                    <ValidationMessage For="(() => LoginModel.UserName)" />
+                </div> *@
+
+                @* <button type="submit" class="btn btn-primary">Login</button> *@
+
+                <div class="auth-input-group">
+                    @* <i class="fa fa-envelope"></i> *@
+                    <input type="text" @bind-value="@LoginModel.UserName" />
+                </div>
+
+                <div class="auth-input-group">
+                    <i class="fa fa-lock"></i>
+                    <input type="text" @bind-value="@LoginModel.Password" />
+                </div>
+
+                <button class="auth-btn">
+                    Sign In
+                </button>
+
+                @if (!string.IsNullOrEmpty(ErrorMessage))
+                {
+                    <spann class="text-danger fs-13">@ErrorMessage</spann>
+                }
+
+            </EditForm>
+
+    }
+            <div class="auth-switch">
+                @if (IsRegister)
+                {
+                    <span>
+                        Already have an account?
+                        <a href="javascript:void(0)" @onclick="() => IsRegister = false">
+                            Login here
+                        </a>
+                    </span>
+                }
+                else
+                {
+                    <span>
+                        Don’t have an account?
+                        <a href="javascript:void(0)" @onclick="() => IsRegister = true">
+                            Create one
+                        </a>
+                    </span>
+                }
+        </div>
+        </Card>
+</div>
+
+@* <input type="checkbox" @bind-value="@IsRegister"></input>
+@(IsRegister ? "Login to an existing account" : "Create a new account") *@
+
+@code {
+    LoginModel LoginModel = new();
+    AddUserModel NewUserModel = new();
+
+    private string ErrorMessage = string.Empty;
+    private string RegisterErrorMessage = string.Empty;
+    private bool IsRegister { get; set; }
+    private async Task HandleLogin()
+    {
+        var response = await UserService.Login(LoginModel);
+
+        if (response.IsSuccess)
+        {
+            StateHasChanged();
+            NavigationManager.NavigateTo("/", true);
+        }
+        else
+        {
+            ErrorMessage = response.Message;
+            StateHasChanged();
+        }
+    }
+
+    private async Task OnUserNameChange(ChangeEventArgs e)
+    {
+        LoginModel.UserName = e.Value?.ToString() ?? "";
+    }
+
+    private async Task HandleRegister()
+    {
+        var response = await UserService.AddNewUser(NewUserModel);
+        if (response.IsSuccess)
+        {
+            NavigationManager.NavigateTo("/", true);
+        }
+        else
+        {
+            RegisterErrorMessage = response.Message;
+        }
+    }
+}

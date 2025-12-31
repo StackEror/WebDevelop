@@ -1,24 +1,40 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using WebDevelopment.Application;
-using WebDevelopment.Application.Services.Country;
+using WebDevelopment.Application.Security;
+using WebDevelopment.Domain.Entities;
 using WebDevelopment.Infrastructure;
-using WebDevelopment.Shared.Interfaces;
+using WebDevelopment.Shared.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+builder.Services.AddOpenApi();// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 
 var connectionString = builder.Configuration.GetConnectionString("Default") ??
     throw new InvalidOperationException("Connection string 'Default' not found.");
-
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
 
-builder.Services.AddAplication();
+builder.Services.AddIdentity<User, IdentityRole<Guid>>()
+    .AddRoleManager<RoleManager<IdentityRole<Guid>>>()
+    .AddUserManager<ApplicationUserManager>()
+    .AddEntityFrameworkStores<AppDbContext>()
+    .AddDefaultTokenProviders();
 
+builder.Services.AddAplication();
+builder.Services.AddScoped<JwtHelper>();
+builder.Services.AddScoped<UserContext>();
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+    options.TokenValidationParameters = JwtHelper.GetTokenValidationParameters(builder.Configuration));
+
+builder.Services.AddAuthorization();
+builder.Services.AddAuthorizationCore();
 
 var app = builder.Build();
 

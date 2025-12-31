@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using WebDevelopment.Infrastructure;
 
@@ -19,10 +20,41 @@ try
     using AppDbContext sc = new AppDbContext(optionsBuilder.Options);
     Console.WriteLine("Starting migration");
     sc.Database.Migrate();
+    new DbSeedingInitializer(sc).Seed();
     Console.WriteLine("End migration");
 }
 catch (Exception ex)
 {
     Console.WriteLine($"Migration failed: {ex.Message}");
     throw;
+}
+
+
+public class DbSeedingInitializer(AppDbContext dbContext)
+{
+    public void Seed()
+    {
+        AddRolesIfDoesntExists();
+        dbContext.SaveChanges();
+    }
+
+    private void AddRolesIfDoesntExists()
+    {
+        var role1 = dbContext.Roles.FirstOrDefault(r => r.Name == "Client");
+        if (role1 == null)
+        {
+            dbContext.Add(new IdentityRole<Guid>("Client")
+            {
+                Id = Guid.NewGuid(),
+            });
+        }
+        var role2 = dbContext.Roles.FirstOrDefault(r => r.Name == "Admin");
+        if (role2 == null)
+        {
+            dbContext.Add(new IdentityRole<Guid>("Admin")
+            {
+                Id = Guid.NewGuid(),
+            });
+        }
+    }
 }

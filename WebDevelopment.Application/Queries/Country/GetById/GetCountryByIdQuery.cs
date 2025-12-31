@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using WebDevelopment.Shared.DTO;
+using WebDevelopment.Shared.DTOs;
 using WebDevelopment.Shared.Responses;
 
 namespace WebDevelopment.Application.Queries.Country.GetById

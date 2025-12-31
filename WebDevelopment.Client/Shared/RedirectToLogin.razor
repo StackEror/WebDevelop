@@ -1,0 +1,19 @@
+﻿@inject NavigationManager Navigation
+@inject AuthenticationStateProvider AuthStateProvider
+
+<AuthorizeView>
+    <NotAuthorized>
+        @code {
+            protected override async Task OnInitializedAsync()
+            {
+                var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+                var user = authState.User;
+
+                if (!user.Identity?.IsAuthenticated ?? true)
+                {
+                    Navigation.NavigateTo("/login");
+                }
+            }
+        }
+    </NotAuthorized>
+</AuthorizeView>

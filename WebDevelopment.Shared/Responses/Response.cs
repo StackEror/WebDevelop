@@ -37,7 +37,7 @@ public class Response<T> : Response
 	/// </summary>
 	/// <param name="data">The data to include in the response.</param>
 	/// <returns>A success response.</returns>
-    public static Response<T> Succes(T data)
+    public static Response<T> Success(T data)
     {
         return new Response<T>(data)
         {

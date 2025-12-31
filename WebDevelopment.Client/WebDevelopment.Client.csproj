@@ -10,8 +10,16 @@
     <Folder Include="wwwroot\icons\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+  </ItemGroup>
+
 	<ItemGroup>
 		<ProjectReference Include="..\WebDevelopment.Shared\WebDevelopment.Shared.csproj" />
 	</ItemGroup>
+
+	<ItemGroup>
+		<Folder Include="Files\DataProtection\keys\" />
+	</ItemGroup>	
 	
 </Project>

@@ -1,4 +1,4 @@
-﻿namespace WebDevelopment.Shared.DTO;
+﻿namespace WebDevelopment.Shared.DTOs;
 
 public class FileDto
 {

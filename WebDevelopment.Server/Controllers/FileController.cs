@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Reflection.Metadata;
-using WebDevelopment.Shared.DTO;
+using WebDevelopment.Shared.DTOs;
 using WebDevelopment.Shared.Interfaces;
 
 namespace WebDevelopment.Server.Controllers;

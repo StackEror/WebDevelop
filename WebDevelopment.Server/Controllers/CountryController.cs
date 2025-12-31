@@ -5,7 +5,7 @@ using WebDevelopment.Application.Commands.Country.Delete;
 using WebDevelopment.Application.Commands.Country.Update;
 using WebDevelopment.Application.Queries.Country.GetById;
 using WebDevelopment.Application.Queries.Country.GetList;
-using WebDevelopment.Shared.DTO;
+using WebDevelopment.Shared.DTOs;
 using WebDevelopment.Shared.Interfaces;
 
 namespace WebDevelopment.Server.Controllers;

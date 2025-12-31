@@ -1,9 +1,11 @@
 ﻿@page "/test"
-@using WebDevelopment.Shared.DTO
+
+@using WebDevelopment.Shared.DTOs
 @using WebDevelopment.Shared.Interfaces
 
 @inject IFileService FileService
 
+@attribute [Authorize]
 
 <InputFile OnChange="OnFileChanged"></InputFile>
 

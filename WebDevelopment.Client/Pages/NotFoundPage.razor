@@ -1,7 +1,6 @@
 ﻿@page "/notfound"
 @page "/404"
-@using Microsoft.Extensions.Localization
-@* @inject IStringLocalizer<Texts> Localizer *@
+
 <PageTitle>Page Not Found</PageTitle>
 
 <div class="not-found-container h-100">
@@ -14,7 +13,7 @@
 
         <div class="action-buttons">
             <button class="btn btn-primary" @onclick="GoHome" title="Home">
-                <i class="fas fa-home"></i> "Home"]
+                <i class="fas fa-home"></i> "Home"
             </button>
             <button class="btn btn-secondary" @onclick="GoBack" title="Back">
                 <i class="fas fa-arrow-left"></i> "Back"
