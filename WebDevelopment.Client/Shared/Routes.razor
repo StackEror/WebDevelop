@@ -1,5 +1,5 @@
 ﻿<CascadingAuthenticationState>
-    <Router AppAssembly="typeof(App).Assembly" >
+    <Router AppAssembly="typeof(App).Assembly">
         <Found Context="routeData">
             <AuthorizeRouteView RouteData="@routeData" DefaultLayout="typeof(MainLayout)">
                 <NotAuthorized>
@@ -9,7 +9,7 @@
             <FocusOnNavigate RouteData="@routeData" Selector="h1" />
         </Found>
         <NotFound>
-            <NotFoundPage />
+            <RedirectOnError RedirectURL="/not-found" />
         </NotFound>
     </Router>
 </CascadingAuthenticationState>

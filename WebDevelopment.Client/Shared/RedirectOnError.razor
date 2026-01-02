@@ -4,15 +4,12 @@
 	[Parameter] public required string RedirectURL { get; set; }
 
 
-	protected override void OnAfterRender(bool firstRender)
+	protected override void OnInitialized()
 	{
-		if (firstRender)
+		NavManager.NavigateTo(RedirectURL, new NavigationOptions
 		{
-			NavManager.NavigateTo(RedirectURL, new NavigationOptions
-			{
-				ForceLoad = true,
-				ReplaceHistoryEntry = true
-			});
-		}
-	}
+			ForceLoad = true,
+			ReplaceHistoryEntry = true
+		});
+	}   
 }

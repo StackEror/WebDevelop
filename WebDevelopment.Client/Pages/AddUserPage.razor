@@ -1,0 +1,221 @@
+﻿@page "/add-user"
+
+@using Radzen.Blazor
+@using System.Security.Claims
+@using WebDevelopment.Client.Components.UIElements
+@using WebDevelopment.Client.Interfaces
+@using WebDevelopment.Client.Models
+@using WebDevelopment.Client.Models.User
+@using WebDevelopment.Shared.Interfaces.Authentication
+
+@inject IUserService UserService
+@inject NavigationManager NavigationManager
+
+<AuthorizeView Roles="Admin" Context="context1">
+    <Authorized>
+        <div class="d-flex" style="justify-content: center; min-height: 80vh; align-items: center;">
+            <Card>
+
+                <p class="h4 fw-semibold mb-2 text-center">Add user</p>
+
+                <EditForm EditContext="@EditContext" OnValidSubmit="AddUser">
+                    <DataAnnotationsValidator></DataAnnotationsValidator>
+                    <div class="auth-input-group">
+                        <i class="fa fa-user"></i>
+                        <InputText placeholder="Name"
+                                   @bind-Value="NewUserModel.Name" />
+                    </div>
+                    <ValidationMessage For="(() => NewUserModel.Name)" />
+
+                    <div class="auth-input-group">
+                        <i class="fa fa-user"></i>
+                        <InputText placeholder="Surname"
+                                   @bind-Value="NewUserModel.Surname" />
+                    </div>
+                    <ValidationMessage For="(() => NewUserModel.Surname)" />
+
+                    <div class="auth-input-group">
+                        <i class="fa fa-user-circle"></i>
+                        <InputText placeholder="Username"
+                                   @bind-Value="NewUserModel.UserName" />
+                    </div>
+                    <ValidationMessage For="(() => NewUserModel.UserName)" />
+
+                    <div class="auth-input-group">
+                        <i class="fa fa-envelope"></i>
+                        <InputText placeholder="Email"
+                                   @bind-Value="NewUserModel.Email" />
+                    </div>
+                    <ValidationMessage For="(() => NewUserModel.Email)" />
+
+                    <div class="auth-input-group">
+                        <i class="fa fa-lock"></i>
+                        <InputText type="text"
+                                   placeholder="Password"
+                                   @bind-value="NewUserModel.Password" />
+                    </div>
+                    <ValidationMessage For="(() => NewUserModel.Password)" />
+
+                    <div class="auth-input-group">
+                        <RadzenDropDown @bind-Value="NewUserModel.RoleIds"
+                                        Data="@Roles"
+                                        Multiple="true"
+                                        TextProperty="Value"
+                                        ValueProperty="Key" />
+
+                    </div>
+
+                    <button type="submit" class="auth-btn">
+                        Add
+                    </button>
+
+                    <span class="text-danger fs-13" style="font-size: 10px;">
+                        @(string.IsNullOrEmpty(RegisterErrorMessage) ? "" : RegisterErrorMessage)
+                    </span>
+
+                </EditForm>
+                <div class="auth-switch">
+                    <span>
+                        Create an account
+                    </span>
+                </div>
+            </Card>
+        </div>
+
+    </Authorized>
+    <NotAuthorized>
+        <RedirectOnError RedirectURL="/not-authorized"></RedirectOnError>
+    </NotAuthorized>
+</AuthorizeView>
+
+
+@code {
+    AddUserModel NewUserModel = new();
+    private string ErrorMessage = string.Empty;
+    private string RegisterErrorMessage = string.Empty;
+    Dictionary<string, string> Roles = new();
+    EditContext EditContext;
+    private ClaimsPrincipal? user;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        EditContext = new EditContext(NewUserModel);
+        Roles = await UserService.GetRolesAsDictionary();
+    }
+
+    private async Task OnUserNameChange(ChangeEventArgs e)
+    {
+        NewUserModel.UserName = e.Value?.ToString() ?? "";
+    }
+
+    private async Task AddUser()
+    {
+        var isValid = EditContext.Validate();
+        if (isValid)
+        {
+
+            var response = await UserService.AddNewUser(NewUserModel);
+            if (response.IsSuccess)
+            {
+                NavigationManager.NavigateTo("/", true);
+            }
+            else
+            {
+                RegisterErrorMessage = response.Message;
+            }
+        }
+
+        // StateHasChanged();
+    }
+    private void OnRoleAdd(string roleId)
+    {
+        NewUserModel.RoleIds.Add(roleId);
+    }
+
+}
+
+
+
+<style>
+    .default-card-style {
+        width: 600px;
+    }
+
+    .auth-input-group {
+        position: relative;
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+
+        .auth-input-group i {
+            position: absolute;
+            top: 50%;
+            left: 14px;
+            transform: translateY(-50%);
+            color: #9aa0a6;
+            font-size: 16px;
+        }
+
+        .auth-input-group input {
+            width: 100%;
+            padding: 12px 14px 12px 42px;
+            border-radius: 10px;
+            border: 1px solid #d0d5dd;
+            font-size: 15px;
+            outline: none;
+            transition: all 0.2s ease;
+            background-color: #fff;
+        }
+
+            .auth-input-group input::placeholder {
+                color: #9aa0a6;
+            }
+
+            .auth-input-group input:focus {
+                border-color: #4f46e5;
+                box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+            }
+
+                .auth-input-group input:focus + i,
+                .auth-input-group input:focus ~ i {
+                    color: #4f46e5;
+                }
+
+    .auth-btn {
+        width: 100%;
+        padding: 12px;
+        background: #4f46e5;
+        border: none;
+        border-radius: 10px;
+        color: #fff;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.2s ease;
+    }
+
+        .auth-btn:hover {
+            background: #4338ca;
+        }
+
+    .auth-switch {
+        text-align: center;
+        margin-top: 1.25rem;
+        font-size: 14px;
+        color: #6b7280;
+    }
+
+        .auth-switch a {
+            color: #4f46e5;
+            font-weight: 600;
+            margin-left: 4px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+            .auth-switch a:hover {
+                text-decoration: underline;
+            }
+
+</style>

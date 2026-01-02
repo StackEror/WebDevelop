@@ -1,9 +1,10 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using WebDevelopment.Application.Commands.Authentication.Login;
-using WebDevelopment.Application.Commands.Users.Add;
+using WebDevelopment.Application.Commands.Authentication.Register;
 using WebDevelopment.Application.DTOs;
 using WebDevelopment.Application.Queries.Users.RefreshToken;
+using WebDevelopment.Shared.DTOs.Authentication;
 using WebDevelopment.Shared.Responses;
 
 namespace WebDevelopment.Server.Controllers;
@@ -15,17 +16,13 @@ public class AuthController(ISender sender) : ControllerBase
 {
 
     [HttpPost("register")]
-    public async Task<IActionResult> AddUser(NewUserDto user)
+    public async Task<IActionResult> AddUser(RegisterUserDto user)
     {
-        var response = await sender.Send(new AddNewUserCommand(user));
+        var response = await sender.Send(new RegisterCommand(user));
 
         if (response == null)
             return BadRequest(response);
 
-        //if (response is Response<Dictionary<string, string>> errors)
-        //{
-        //    return Ok(errors);
-        //}
         if (response is Response<Guid> result)
         {
             if (result.IsSuccess && result.Data != Guid.Empty)
@@ -38,7 +35,6 @@ public class AuthController(ISender sender) : ControllerBase
             }
         }
         return BadRequest(response);
-        //return Ok(Response<Dictionary<string, string>>.Success([]));
     }
 
     [HttpPost("login")]
@@ -61,7 +57,7 @@ public class AuthController(ISender sender) : ControllerBase
     [HttpPost("refresh")]
     public async Task<IActionResult> RefreshTokenAsync([FromBody] RefreshTokenDto dto)
     {
-        var response = await sender.Send(new RefreshTokenQuery(dto.RefreshToken));
+        var response = await sender.Send(new RefreshTokenQuery(dto));
 
         if (response == null)
             return Unauthorized();

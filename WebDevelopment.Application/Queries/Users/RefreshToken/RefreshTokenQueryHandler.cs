@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Logging;
 using System.Security.Claims;
 using WebDevelopment.Application.Security;
-using WebDevelopment.Shared.DTOs;
+using WebDevelopment.Shared.DTOs.Users;
 using WebDevelopment.Shared.Helpers;
 using WebDevelopment.Shared.Responses;
 
@@ -18,7 +18,7 @@ public class RefreshTokenQueryHandler(
     {
         try
         {
-            var principal = jwtHelper.ValidateRefreshToken(request.RefreshToken);
+            var principal = jwtHelper.ValidateRefreshToken(request.RefreshToken.RefreshToken);
 
             if (principal == null)
             {

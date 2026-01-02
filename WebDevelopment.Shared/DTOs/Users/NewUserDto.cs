@@ -6,7 +6,7 @@ public class NewUserDto
     public string Surname { get; set; }
     public string UserName { get; set; }
     public string? Email { get; set; }
-    public string RoleId { get; set; } = string.Empty;
+    public List<string> RoleIds { get; set; } = [];
     public string Password { get; set; }
     public bool IsActive { get; set; } = true;
 }

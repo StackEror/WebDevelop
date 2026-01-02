@@ -1,31 +1,25 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using WebDevelopment.Application.Security;
 using WebDevelopment.Domain.Entities;
 using WebDevelopment.Infrastructure;
 using WebDevelopment.Shared.Responses;
 
-namespace WebDevelopment.Application.Commands.Users.Add;
+namespace WebDevelopment.Application.Commands.Authentication.Register;
 
-public class AddNewUserCommandHandler(
+public class RegisterCommandHandler(
     UserManager<User> userManager,
     RoleManager<IdentityRole<Guid>> roleManager,
-    ILogger<AddNewUserCommandHandler> logger,
+    ILogger<RegisterCommandHandler> logger,
     AppDbContext dbContext,
     ApplicationUserManager appUserManager
-    ) : IRequestHandler<AddNewUserCommand, Response>
+    ) : IRequestHandler<RegisterCommand, Response>
 {
-    public async Task<Response> Handle(AddNewUserCommand request, CancellationToken cancellationToken)
+    public async Task<Response> Handle(RegisterCommand request, CancellationToken cancellationToken)
     {
         try
         {
-            var roleNames = await dbContext.Roles
-                 .Where(r => request.User.RoleIds.Contains(r.Id.ToString()))
-                 .Select(n => n.Name)
-                 .ToListAsync();
-
             var newUser = new User
             {
                 Id = Guid.NewGuid(),
@@ -34,31 +28,29 @@ public class AddNewUserCommandHandler(
                 UserName = request.User.UserName,
                 Email = request.User.Email,
                 IsActive = true,
-                Roles = string.Join(", ", roleNames),
+                Roles = "Client",
             };
+
+            var dbRole = roleManager.Roles.FirstOrDefault(r => r.Name == "Client");
+            var userRoleId = dbRole.Id.ToString();
 
             var result = await userManager.CreateAsync(newUser, request.User.Password);
 
             if (!result.Succeeded)
             {
-                logger.LogError("Failed to create user: {Errors}", string.Join(", ", result.Errors.Select(e => e.Description)));
+                logger.LogError("Failed to register user: {Errors}", string.Join(", ", result.Errors.Select(e => e.Description)));
                 return Response<Guid>.Failure(string.Join(", ", result.Errors.Select(e => e.Description)));
             }
 
-            //var role = await roleManager.FindByIdAsync(request.User.RoleId);
+            var role = await roleManager.FindByIdAsync(userRoleId);
 
-            //if (role == null)
-            //{
-            //    logger.LogError($"Role not found, role Id: {request.User.RoleId}");
-            //    return Response<Guid>.Failure("Role not found");
-            //}
+            if (role == null)
+            {
+                logger.LogError($"Role not found, role Id: {userRoleId}");
+                return Response<Guid>.Failure("Role not found");
+            }
 
-            //var roleName = await dbContext.Roles
-            //    .Where(r => r.Id == Guid.Parse(request.User.RoleId))
-            //    .Select(r => r.Name)
-            //    .FirstOrDefaultAsync();
-
-            var resultAddRole = await userManager.AddToRolesAsync(newUser, roleNames ?? []);
+            var resultAddRole = await userManager.AddToRoleAsync(newUser, dbRole.Name ?? string.Empty);
 
             if (!resultAddRole.Succeeded)
             {

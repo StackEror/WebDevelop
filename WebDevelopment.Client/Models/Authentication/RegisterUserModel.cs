@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace WebDevelopment.Client.Models.User;
+namespace WebDevelopment.Client.Models.Authentication;
 
-public class AddUserModel
+public class RegisterUserModel
 {
     [Required(ErrorMessage = "Name is required")]
     public string Name { get; set; }
@@ -16,9 +16,6 @@ public class AddUserModel
     [Required(ErrorMessage = "Email is required")]
     [RegularExpression(@"^$|^[^@\s]+@[^@\s]+\.[^@\s]+$", ErrorMessage = "Invalid email")]
     public string? Email { get; set; }
-
-    [Required(ErrorMessage = "RoleId is required")]
-    public List<string> RoleIds { get; set; } = [];
 
     [Required(ErrorMessage = "Password is required")]
     public string Password { get; set; }

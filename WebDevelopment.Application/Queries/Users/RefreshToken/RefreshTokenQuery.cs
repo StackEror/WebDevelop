@@ -1,6 +1,7 @@
 ﻿using MediatR;
+using WebDevelopment.Application.DTOs;
 using WebDevelopment.Shared.Responses;
 
 namespace WebDevelopment.Application.Queries.Users.RefreshToken;
 
-public record RefreshTokenQuery(string RefreshToken) : IRequest<Response<string>>;
+public record RefreshTokenQuery(RefreshTokenDto RefreshToken) : IRequest<Response<string>>;

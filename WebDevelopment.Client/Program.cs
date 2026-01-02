@@ -50,6 +50,7 @@ builder.Services.AddScoped(sp => new HttpClient
 builder.Services.AddScoped<ICountryService, CountryService>();
 builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Newtonsoft.Json;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using WebDevelopment.Client.Models;
+using WebDevelopment.Client.Models.Authentication;
 using WebDevelopment.Client.StringConstants;
 using WebDevelopment.Shared.Responses;
 

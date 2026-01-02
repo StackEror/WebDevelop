@@ -1,4 +1,4 @@
-﻿namespace WebDevelopment.Shared.DTOs;
+﻿namespace WebDevelopment.Shared.DTOs.Users;
 
 public class UserDto
 {

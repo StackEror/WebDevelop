@@ -3,8 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using WebDevelopment.Application.Security;
 using WebDevelopment.Infrastructure;
-using WebDevelopment.Shared.DTOs;
 using WebDevelopment.Shared.DTOs.Authentication;
+using WebDevelopment.Shared.DTOs.Users;
 using WebDevelopment.Shared.Helpers;
 using WebDevelopment.Shared.Responses;
 

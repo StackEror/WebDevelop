@@ -3,7 +3,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using WebDevelopment.Shared.DTOs;
+using WebDevelopment.Shared.DTOs.Users;
 
 namespace WebDevelopment.Shared.Helpers;
 
