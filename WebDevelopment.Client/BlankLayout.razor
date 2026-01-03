@@ -1,6 +1,59 @@
 ﻿@inherits LayoutComponentBase
 
-@Body
+
+<html>
+
+<head>
+    <title>LogIn</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="login/css/backGround.css">
+    <link rel="stylesheet" href="login/css/mainStyle.css">
+
+    <style>
+        .container-login {
+            /* Pentru latime limitata 
+            width: 310px; 
+            */
+            height: 260px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            -webkit-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+            z-index: 99998;
+            border: 1px solid rgba(0, 0, 0, 0.5);
+            border-radius: 5px;
+            -webkit-box-shadow: 0px 0px 20px -10px #000;
+            box-shadow: 0px 0px 20px -10px #000;
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+            -webkit-box-pack: center;
+            -ms-flex-pack: center;
+            justify-content: center;
+            -webkit-box-align: center;
+            -ms-flex-align: center;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+    <div id="particles-background" class="vertical-centered-box"></div>
+    <div id="particles-foreground" class="vertical-centered-box"></div>
+
+    <div class="container-login">
+        <div class="up-logo-container">
+            <svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+        </div>
+        @Body
+    </div>
+
+    <script src="login/js/backGround.js"></script>
+    <script src="login/js/mainScript.js"></script>
+</body>
+
+</html>
 
 @code {
 

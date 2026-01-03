@@ -12,10 +12,10 @@
 @inject NavigationManager NavigationManager
 
 
-<div class="d-flex" style="justify-content: center; min-height: 80vh; align-items: center;">
+@* <div class="d-flex" style="justify-content: center; min-height: 80vh; align-items: center;"> *@
     <Card>
-    @if (IsRegister)
-    {
+        @if (IsRegister)
+        {
             <p class="h4 fw-semibold mb-2 text-center">Register</p>
 
             <EditForm EditContext="@RegisterEditContext" OnValidSubmit="HandleRegister">
@@ -24,36 +24,36 @@
                 <div class="auth-input-group">
                     <i class="fa fa-user"></i>
                     <InputText placeholder="Name"
-                               @bind-Value="RegisterUserModel.Name" />
+                                @bind-Value="RegisterUserModel.Name" />
                 </div>
                 <ValidationMessage For="(() => RegisterUserModel.Name)" />
 
                 <div class="auth-input-group">
                     <i class="fa fa-user"></i>
                     <InputText placeholder="Surname"
-                               @bind-Value="RegisterUserModel.Surname" />
+                                @bind-Value="RegisterUserModel.Surname" />
                 </div>
                 <ValidationMessage For="(() => RegisterUserModel.Surname)" />
 
                 <div class="auth-input-group">
                     <i class="fa fa-user-circle"></i>
                     <InputText placeholder="Username"
-                               @bind-Value="RegisterUserModel.UserName" />
+                                @bind-Value="RegisterUserModel.UserName" />
                 </div>
                 <ValidationMessage For="(() => RegisterUserModel.UserName)" />
 
                 <div class="auth-input-group">
                     <i class="fa fa-envelope"></i>
                     <InputText placeholder="Email"
-                               @bind-Value="RegisterUserModel.Email" />
+                                @bind-Value="RegisterUserModel.Email" />
                 </div>
                 <ValidationMessage For="(() => RegisterUserModel.Email)" />
 
                 <div class="auth-input-group">
                     <i class="fa fa-lock"></i>
                     <InputText type="text"
-                           placeholder="Password"
-                           @bind-value="RegisterUserModel.Password" />
+                            placeholder="Password"
+                            @bind-value="RegisterUserModel.Password" />
                 </div>
                 <ValidationMessage For="(() => RegisterUserModel.Password)" />
 
@@ -68,9 +68,9 @@
                     </div>
                 }
             </EditForm>
-    }
-    else
-    {
+        }
+        else
+        {
             <EditForm Model="@LoginModel" OnValidSubmit="HandleLogin">
                 <DataAnnotationsValidator></DataAnnotationsValidator>
 
@@ -79,15 +79,15 @@
                
 
                 <div class="auth-input-group">
-                   <i class="fa-regular fa-circle-user"></i>
-                   <InputText placeholder="username" @bind-value="@LoginModel.UserName" ></InputText>
+                    <i class="fa-regular fa-circle-user"></i>
+                    <InputText placeholder="username" @bind-value="@LoginModel.UserName" ></InputText>
                     @* <input type="text" @bind-value="@LoginModel.UserName" /> *@
                 </div>
-                       <ValidationMessage For="(() => LoginModel.UserName)" />
+                        <ValidationMessage For="(() => LoginModel.UserName)" />
 
                 <div class="auth-input-group">
                     <i class="fa fa-lock"></i>
-                   <InputText placeholder="password" @bind-value="@LoginModel.Password" ></InputText>
+                    <InputText placeholder="password" @bind-value="@LoginModel.Password" ></InputText>
                     @* <input type="text" @bind-value="@LoginModel.Password" /> *@
                 </div>
                     <ValidationMessage For="(() => LoginModel.Password)" />
@@ -103,29 +103,29 @@
 
             </EditForm>
 
-    }
-            <div class="auth-switch">
-                @if (IsRegister)
-                {
-                    <span>
-                        Already have an account?
-                        <a href="javascript:void(0)" @onclick="() => IsRegister = false">
-                            Login here
-                        </a>
-                    </span>
-                }
-                else
-                {
-                    <span>
-                        Don’t have an account?
-                        <a href="javascript:void(0)" @onclick="() => IsRegister = true">
-                            Create one
-                        </a>
-                    </span>
-                }
+        }
+        <div class="auth-switch">
+            @if (IsRegister)
+            {
+                <span>
+                    Already have an account?
+                    <a href="javascript:void(0)" @onclick="() => IsRegister = false">
+                        Login here
+                    </a>
+                </span>
+            }
+            else
+            {
+                <span>
+                    Don’t have an account?
+                    <a href="javascript:void(0)" @onclick="() => IsRegister = true">
+                        Create one
+                    </a>
+                </span>
+            }
         </div>
         </Card>
-</div>
+@* </div> *@
 
 @code {
     LoginModel LoginModel = new();
@@ -193,26 +193,11 @@
 }
 
 
- @* <div class="col-xl-12" style="justify-items: center;">
-                    <div style="text-align: center;">
-                        <label for="signin-username" class="form-label text-default d-block">Username</label>
-                    </div>
-                    <InputText class="form-control" style="width: 500px;" @bind-Value="LoginModel.UserName" @oninput="OnUserNameChange" />
-                    <ValidationMessage For="(() => LoginModel.UserName)" />
-                </div>
-
-                <div class="col-xl-12" style="justify-items: center;">
-                    <label for="signin-password" class="form-label text-default d-block">Password</label>
-                    <InputText class="form-control" style="width: 500px;" @bind-Value="LoginModel.Password" />
-                    <ValidationMessage For="(() => LoginModel.UserName)" />
-                </div> 
-
-                <button type="submit" class="btn btn-primary">Login</button> 
-                *@
-
-
-
             <style>
+    .up-logo-container {
+        top: @(IsRegister ? "-120px" : "-25px");
+    }
+
     .default-card-style {
         width: 600px;
     }

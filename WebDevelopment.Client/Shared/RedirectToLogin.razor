@@ -17,3 +17,35 @@
         }
     </NotAuthorized>
 </AuthorizeView>
+@*@code {
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (!user.Identity?.IsAuthenticated ?? true)
+        {
+            Navigation.NavigateTo("/login");
+        }
+    }
+}
+
+
+  // private bool _redirected;
+
+    // protected override async Task OnAfterRenderAsync(bool firstRender)
+    // {
+    //     if (!firstRender || _redirected)
+    //         return;
+
+    //     var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+    //     var user = authState.User;
+
+    //     if (!user.Identity?.IsAuthenticated ?? true)
+    //     {
+    //         _redirected = true;
+    //         Navigation.NavigateTo("/login", replace: true);
+    //     }
+    // } 
+
+*@

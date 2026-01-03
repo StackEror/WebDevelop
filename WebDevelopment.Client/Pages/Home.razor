@@ -1,3 +1,10 @@
 ﻿@page "/"
 
-<p>H O M E</p>
+<AuthorizeView>
+    <Authorized>
+        <p>H O M E</p>
+    </Authorized>
+    <NotAuthorized>
+        <RedirectToLogin></RedirectToLogin>
+    </NotAuthorized>
+</AuthorizeView>
