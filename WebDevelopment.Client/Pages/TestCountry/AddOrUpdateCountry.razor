@@ -9,58 +9,65 @@
 
 @inject ICountryService CountryService
 @inject NavigationManager NavigationManager
+<AuthorizeView>
+    <Authorized>
 
-@if (IsLoading)
-{
-    <Loading />
-}
-else
-{
-    <button type="button" class="btn btn-primary m-3" @onclick="NavigateBack">
-        Go back
-    </button>
-    <EditForm Model="@Country" OnSubmit="@(async () => await SaveChanges(Country))" FormName="AddCountry">
+        @if (IsLoading)
+        {
+            <Loading />
+        }
+        else
+        {
+            <button type="button" class="btn btn-primary m-3" @onclick="NavigateBack">
+                Go back
+            </button>
+            <EditForm Model="@Country" OnSubmit="@(async () => await SaveChanges(Country))" FormName="AddCountry">
 
-        <p>PeopleCount</p>
-        <InputNumber @bind-Value="@Country.PeopleCount"></InputNumber>
+                <p>PeopleCount</p>
+                <InputNumber @bind-Value="@Country.PeopleCount"></InputNumber>
 
-        <p style="margin-top:10px;">Type</p>
-        <InputText @bind-Value="@Country.Type"></InputText>
+                <p style="margin-top:10px;">Type</p>
+                <InputText @bind-Value="@Country.Type"></InputText>
 
-        <p style="margin-top:10px;">Name</p>
-        <InputText @bind-Value="@Country.Name"></InputText>
+                <p style="margin-top:10px;">Name</p>
+                <InputText @bind-Value="@Country.Name"></InputText>
 
-        <p style="margin-top:10px;">Country.Continent</p>
-        <InputSelect TValue="ContinentEnum?" @bind-Value="@Country.Continent">
+                <p style="margin-top:10px;">Country.Continent</p>
+                <InputSelect TValue="ContinentEnum?" @bind-Value="@Country.Continent">
 
-            @foreach (var val in Enum.GetValues(typeof(ContinentEnum)).Cast<ContinentEnum>())
-            {
-                <option value="@val">@val</option>
-            }
-        </InputSelect>
+                    @foreach (var val in Enum.GetValues(typeof(ContinentEnum)).Cast<ContinentEnum>())
+                    {
+                        <option value="@val">@val</option>
+                    }
+                </InputSelect>
 
-        <p style="margin-top:10px;">Country.Continent</p>
-        <InputSelect TValue="CountrySizeEnum?" @bind-Value="@Country.CountrySize">
+                <p style="margin-top:10px;">Country.Continent</p>
+                <InputSelect TValue="CountrySizeEnum?" @bind-Value="@Country.CountrySize">
 
-            @foreach (var val in Enum.GetValues(typeof(CountrySizeEnum)).Cast<CountrySizeEnum>())
-            {
-                <option value="@val">@val</option>
-            }
-        </InputSelect>
-        <p style="margin-top:10px;">Country.Continent</p>
-        <InputSelect TValue="RankEnum?" @bind-Value="@Country.Rank">
+                    @foreach (var val in Enum.GetValues(typeof(CountrySizeEnum)).Cast<CountrySizeEnum>())
+                    {
+                        <option value="@val">@val</option>
+                    }
+                </InputSelect>
+                <p style="margin-top:10px;">Country.Continent</p>
+                <InputSelect TValue="RankEnum?" @bind-Value="@Country.Rank">
 
-            @foreach (var val in Enum.GetValues(typeof(RankEnum)).Cast<RankEnum>())
-            {
-                <option value="@val">@val</option>
-            }
-        </InputSelect>
+                    @foreach (var val in Enum.GetValues(typeof(RankEnum)).Cast<RankEnum>())
+                    {
+                        <option value="@val">@val</option>
+                    }
+                </InputSelect>
 
-        <InputCheckbox @bind-Value="@Country.IsIsland"></InputCheckbox>
-        <button type="submit" class="btn btn-primary">Save Changes</button>
-    </EditForm>
-}
+                <InputCheckbox @bind-Value="@Country.IsIsland"></InputCheckbox>
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+            </EditForm>
+        }
 
+    </Authorized>
+    <NotAuthorized>
+        <RedirectToLogin />
+    </NotAuthorized>
+</AuthorizeView>
 
 @code {
     [Parameter] public string ModelId { get; set; } = string.Empty;

@@ -5,30 +5,37 @@
 
 @inject IFileService FileService
 
-@attribute [Authorize]
+@* @attribute [Authorize] *@
 
-<InputFile OnChange="OnFileChanged"></InputFile>
+<AuthorizeView>
+    <Authorized>
 
-@if (fileList != null && fileList.Any())
-{
-    @foreach (var item in fileList)
-    {
-        <div>
-            <img src="@($"data:{item.ContentType};base64,{Convert.ToBase64String(item.Content)}")" />
-        </div>
-    }
-}
+        <InputFile OnChange="OnFileChanged"></InputFile>
 
-<button type="button" class="btn btn-primary m-3" @onclick="() => AddFile(FileDto)">Add File</button>
-@if (IdToSearch != Guid.Empty && FileDto.Content != null)
-{
-    <div>
-        <img src="@($"data:{FileDto.ContentType};base64,{Convert.ToBase64String(FileDto.Content)}")" />
-    </div>
-}
-<button type="button" class="btn btn-primary m-3" @onclick="() => GetById(IdToSearch)">Get</button>
+        @if (fileList != null && fileList.Any())
+        {
+            @foreach (var item in fileList)
+            {
+                <div>
+                    <img src="@($"data:{item.ContentType};base64,{Convert.ToBase64String(item.Content)}")" />
+                </div>
+            }
+        }
 
+        <button type="button" class="btn btn-primary m-3" @onclick="() => AddFile(FileDto)">Add File</button>
+        @if (IdToSearch != Guid.Empty && FileDto.Content != null)
+        {
+            <div>
+                <img src="@($"data:{FileDto.ContentType};base64,{Convert.ToBase64String(FileDto.Content)}")" />
+            </div>
+        }
+        <button type="button" class="btn btn-primary m-3" @onclick="() => GetById(IdToSearch)">Get</button>
 
+    </Authorized>
+    <NotAuthorized>
+        <RedirectToLogin />
+    </NotAuthorized>
+</AuthorizeView>
 
 @code {
     private FileDto FileDto { get; set; } = new();

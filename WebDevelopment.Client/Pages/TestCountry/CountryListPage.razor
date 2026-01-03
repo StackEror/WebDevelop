@@ -35,6 +35,11 @@
     }
 </style>
 
+
+
+<AuthorizeView>
+    <Authorized>
+
 @if (IsLoading)
 {
     <Loading />
@@ -164,6 +169,11 @@ else
         Are you sure you want to delete this country
     </BaseModal>
 }
+ </Authorized>
+    <NotAuthorized>
+        <RedirectToLogin />
+    </NotAuthorized>
+</AuthorizeView>
 @code {
     public CountryDto Country { get; set; } = new();
     public List<CountryDto> Countries { get; set; } = [];

@@ -13,7 +13,7 @@
 
 
 @* <div class="d-flex" style="justify-content: center; min-height: 80vh; align-items: center;"> *@
-    <Card>
+<Card>
         @if (IsRegister)
         {
             <p class="h4 fw-semibold mb-2 text-center">Register</p>
@@ -148,7 +148,7 @@
     {
         var isValid = LoginEditContext.Validate();
 
-        if(isValid)
+        if (isValid)
         {
             var response = await AuthService.Login(LoginModel);
 
@@ -161,7 +161,7 @@
             {
                 ErrorMessage = response.Message;
                 StateHasChanged();
-            }   
+            }
         }
 
         StateHasChanged();
@@ -193,7 +193,7 @@
 }
 
 
-            <style>
+<style>
     .up-logo-container {
         top: @(IsRegister ? "-120px" : "-25px");
     }
@@ -233,19 +233,19 @@
             }
 
             .auth-input-group input:focus {
-                border-color: #4f46e5;
+                border-color: #1563b1;
                 box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
             }
 
                 .auth-input-group input:focus + i,
                 .auth-input-group input:focus ~ i {
-                    color: #4f46e5;
+                    color: #1563b1;
                 }
 
     .auth-btn {
         width: 100%;
         padding: 12px;
-        background: #4f46e5;
+        background: #1563b1;
         border: none;
         border-radius: 10px;
         color: #fff;
@@ -256,7 +256,7 @@
     }
 
         .auth-btn:hover {
-            background: #4338ca;
+            background: #0f4c8a;
         }
 
     .auth-switch {
@@ -267,7 +267,7 @@
     }
 
         .auth-switch a {
-            color: #4f46e5;
+            color: #1563b1;
             font-weight: 600;
             margin-left: 4px;
             text-decoration: none;
