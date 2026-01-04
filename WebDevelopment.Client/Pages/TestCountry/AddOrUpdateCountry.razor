@@ -9,7 +9,7 @@
 
 @inject ICountryService CountryService
 @inject NavigationManager NavigationManager
-<AuthorizeView>
+<AuthorizeView Context="ctx1">
     <Authorized>
 
         @if (IsLoading)

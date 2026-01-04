@@ -6,12 +6,13 @@
 @using WebDevelopment.Client.Models
 @using WebDevelopment.Client.Models.Authentication
 @using WebDevelopment.Client.Models.User
+@using WebDevelopment.Client.Services
 @using WebDevelopment.Shared.Interfaces.Authentication
 
 @inject IAuthService AuthService
+@inject IJSRuntime JSRuntime
 @inject NavigationManager NavigationManager
-
-
+@inject CustomAuthenticationStateProvider customAuthenticationStateProvider
 @* <div class="d-flex" style="justify-content: center; min-height: 80vh; align-items: center;"> *@
 <Card>
         @if (IsRegister)
@@ -140,9 +141,21 @@
 
     protected override async Task OnInitializedAsync()
     {
+        // var authUser = await customAuthenticationStateProvider.GetAuthenticatedUser();
+        var authState = await customAuthenticationStateProvider.GetAuthenticationStateAsync();
+
+        var user = authState.User;
+
+        if (user.Identity != null && user.Identity.IsAuthenticated)
+        {
+            GoBack();
+        }
+
         RegisterEditContext = new EditContext(RegisterUserModel);
         LoginEditContext = new EditContext(LoginModel);
     }
+
+    private async void GoBack() => await JSRuntime.InvokeVoidAsync("history.back");
 
     private async Task HandleLogin()
     {
@@ -199,7 +212,7 @@
     }
 
     .default-card-style {
-        width: 600px;
+        width: 350px;
     }
 
     .auth-input-group {
