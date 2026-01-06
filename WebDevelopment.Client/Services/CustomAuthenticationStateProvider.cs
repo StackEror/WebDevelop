@@ -33,7 +33,7 @@ public class CustomAuthenticationStateProvider(
 
     private async Task<bool> VerificationUserToken()
     {
-        var accesToken = await protectedLocalStorage.GetItemAsync<string>(AuthConstants.AccesToken);
+        var accesToken = await protectedLocalStorage.GetItemAsync<string>(AuthConstants.AccessToken);
         var refreshToken = await protectedLocalStorage.GetItemAsync<string>(AuthConstants.RefreshToken);
 
         if (string.IsNullOrEmpty(accesToken) || string.IsNullOrEmpty(refreshToken))
@@ -81,7 +81,7 @@ public class CustomAuthenticationStateProvider(
 
     public async Task MarkUserAsLoggedOut()
     {
-        await protectedLocalStorage.RemoveItemAsync(AuthConstants.AccesToken);
+        await protectedLocalStorage.RemoveItemAsync(AuthConstants.AccessToken);
         await protectedLocalStorage.RemoveItemAsync(AuthConstants.RefreshToken);
 
         //var identity = new ClaimsIdentity();
@@ -93,7 +93,7 @@ public class CustomAuthenticationStateProvider(
 
     public async Task MarkUserAsAuthenticated(TokenResponse tokenResponse)
     {
-        await protectedLocalStorage.SetItemAsync<string>(AuthConstants.AccesToken, tokenResponse.Token);
+        await protectedLocalStorage.SetItemAsync<string>(AuthConstants.AccessToken, tokenResponse.Token);
         await protectedLocalStorage.SetItemAsync<string>(AuthConstants.RefreshToken, tokenResponse.RefreshToken);
 
         var claims = ParseClaimsFromJwt(tokenResponse.Token);
@@ -105,10 +105,10 @@ public class CustomAuthenticationStateProvider(
 
     public async Task<AuthenticatedUser?> GetAuthenticatedUser()
     {
-        var token = await protectedLocalStorage.GetItemAsync<string>(AuthConstants.AccesToken);
+        var token = await protectedLocalStorage.GetItemAsync<string>(AuthConstants.AccessToken);
         if(string.IsNullOrEmpty(token))
         {
-            await protectedLocalStorage.RemoveItemAsync(AuthConstants.AccesToken);
+            await protectedLocalStorage.RemoveItemAsync(AuthConstants.AccessToken);
             return null;
         }
 
@@ -123,10 +123,10 @@ public class CustomAuthenticationStateProvider(
     {
         try
         {
-            var token = await protectedLocalStorage.GetItemAsync<string>(AuthConstants.AccesToken);
+            var token = await protectedLocalStorage.GetItemAsync<string>(AuthConstants.AccessToken);
             if (string.IsNullOrEmpty(token))
             {
-                await protectedLocalStorage.RemoveItemAsync(AuthConstants.AccesToken);
+                await protectedLocalStorage.RemoveItemAsync(AuthConstants.AccessToken);
                 return new AuthenticationState(_anonymous);
             }
 

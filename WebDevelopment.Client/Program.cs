@@ -29,22 +29,31 @@ var persistKeysToFiles = Path.Combine(basePath, "Files", "DataProtection", "keys
 builder.Services.AddDataProtection()
     .PersistKeysToFileSystem(new DirectoryInfo(persistKeysToFiles))
     .SetApplicationName("WebDevelopment");
-//builder.Services.AddScoped<>();
 
-
-//builder.Services.AddSession(options =>
-//{
-//    options.IdleTimeout = TimeSpan.FromMinutes(30);
-//    options.Cookie.HttpOnly = true;
-//    options.Cookie.IsEssential = true;
-//});
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
 
 builder.Services.AddHttpContextAccessor();
 
-
-builder.Services.AddScoped(sp => new HttpClient
+builder.Services.AddSingleton(serviceProvider =>
 {
-    BaseAddress = new Uri(builder.Configuration["Api:BaseUrl"]!)
+    var client = new HttpClient();
+    var baseAdrdess = builder.Configuration["Api:BaseUrl"];
+    if (string.IsNullOrEmpty(baseAdrdess))
+        throw new InvalidOperationException("Api base url is missing or empty");
+
+    client.BaseAddress = new Uri(baseAdrdess);
+    return client;
+});
+
+builder.Services.AddHttpClient<ApiClient>("ApiClient", client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["Api:BaseUrl"]!);
 });
 
 builder.Services.AddScoped<ICountryService, CountryService>();
@@ -75,6 +84,8 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseSession();
 
 app.UseAuthentication();
 app.UseAuthorization();

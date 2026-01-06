@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebDevelopment.Application.Commands.Country.Add;
 using WebDevelopment.Application.Commands.Country.Delete;
@@ -11,6 +12,7 @@ using WebDevelopment.Shared.Interfaces;
 namespace WebDevelopment.Server.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("api/country")]
 public class CountryController(
     ICountryService _countryService,

@@ -52,7 +52,7 @@ public class AuthService(
 
         if (response?.IsSuccess == true && response.Data is not null)
         {
-            await protectedLocalStorageService.SetItemAsync<string>(AuthConstants.AccesToken, response.Data.TokenResponse.Token);
+            await protectedLocalStorageService.SetItemAsync<string>(AuthConstants.AccessToken, response.Data.TokenResponse.Token);
             await protectedLocalStorageService.SetItemAsync<string>(AuthConstants.RefreshToken, response.Data.TokenResponse.RefreshToken);
             await customAuthenticationStateProvider.MarkUserAsAuthenticated(response.Data.TokenResponse);
             return Response<LoginResponseModel>.Success(response.Data);

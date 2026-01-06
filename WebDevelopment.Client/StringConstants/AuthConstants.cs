@@ -2,7 +2,7 @@
 
 public static class AuthConstants
 {
-    public const string AccesToken = "auth-token";
+    public const string AccessToken = "auth-token";
     public const string RefreshToken = "refresh-token";
 
     //in minutes
