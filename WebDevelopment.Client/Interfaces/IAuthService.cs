@@ -7,4 +7,5 @@ public interface IAuthService
 {
     Task<Response> Register(RegisterUserModel userModel);
     Task<Response<LoginResponseModel>> Login(LoginModel loginModel);
+    Task LogOut();
 }

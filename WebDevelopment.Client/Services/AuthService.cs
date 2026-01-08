@@ -61,6 +61,11 @@ public class AuthService(
         return Response<LoginResponseModel>.Failure(response?.Message ?? "Unknown error");
     }
 
+    public async Task LogOut()
+    {
+        await customAuthenticationStateProvider.MarkUserAsLoggedOut();
+    }
+
     private static StringContent GetJson<T>(T model) =>
         new StringContent(JsonSerializer.Serialize(model), Encoding.UTF8, "application/json");
 

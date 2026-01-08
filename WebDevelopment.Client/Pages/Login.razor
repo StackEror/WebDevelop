@@ -127,6 +127,11 @@
         </div>
         </Card>
 @* </div> *@
+@if(ShowLoading)
+{
+    <Loading />
+}
+
 
 @code {
     LoginModel LoginModel = new();
@@ -138,6 +143,7 @@
     private string ErrorMessage = string.Empty;
     private string RegisterErrorMessage = string.Empty;
     private bool IsRegister { get; set; }
+    private bool ShowLoading { get; set; } = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -163,11 +169,13 @@
 
         if (isValid)
         {
+            ShowLoading = true;
             var response = await AuthService.Login(LoginModel);
 
             if (response.IsSuccess)
             {
                 StateHasChanged();
+                ShowLoading = false;
                 NavigationManager.NavigateTo("/", true);
             }
             else
@@ -178,6 +186,7 @@
         }
 
         StateHasChanged();
+        ShowLoading = false;
     }
 
     private async Task OnUserNameChange(ChangeEventArgs e)
@@ -209,6 +218,7 @@
 <style>
     .up-logo-container {
         top: @(IsRegister ? "-120px" : "-25px");
+        z-index:9999;
     }
 
     .default-card-style {
@@ -290,5 +300,7 @@
             .auth-switch a:hover {
                 text-decoration: underline;
             }
-
+             .spinner-overlay {
+                height:100% !important;
+             }
 </style>

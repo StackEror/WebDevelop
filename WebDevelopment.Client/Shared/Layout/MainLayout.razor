@@ -1,5 +1,9 @@
-﻿@inherits LayoutComponentBase
+﻿@using WebDevelopment.Client.Interfaces
 
+@inherits LayoutComponentBase
+
+@inject NavigationManager NavigationManager
+@inject IAuthService AuthService
 
 <AuthorizeView>
     <Authorized>
@@ -11,6 +15,7 @@
             <main>
                 <div class="top-row px-4">
                     <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
+                    <a class="log-out-button" @onclick="async () => await LogOut()">Log Out</a>
                 </div>
 
                 <article class="content px-4">
@@ -29,3 +34,17 @@
         <RedirectToLogin />
     </NotAuthorized>
 </AuthorizeView>
+
+@code{
+
+    private async Task LogOut()
+    {
+        await AuthService.LogOut();
+    }
+}
+
+<style>
+    .log-out-button:hover{
+        cursor: pointer;
+    }
+</style>
