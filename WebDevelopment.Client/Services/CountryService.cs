@@ -1,7 +1,4 @@
 ﻿using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using WebDevelopment.Client.StringConstants;
 using WebDevelopment.Shared.DTOs;
 using WebDevelopment.Shared.Interfaces;
 using WebDevelopment.Shared.Responses;
@@ -17,24 +14,28 @@ public class CountryService(
     //    await _httpClient.PostAsJsonAsync("api/country/add", country);
     //}
 
-    public async Task<Response> Delete(Guid id)
+    public async Task<Response<Guid>> Add(CountryDto country)
     {
-        var response = await apiClient.DeleteAsync($"api/country/{id}");
+        var response = await apiClient.PostAsJsonGetResponseAsync("api/country/add", country);
 
-        //if (response == )
-        //    return new Response();
-        //else
-        return new Response() { IsSuccess = false };
+        if (response.StatusCode == HttpStatusCode.OK)
+        {
+            var result = await response.Content.ReadFromJsonAsync<Guid>();
+            return new Response<Guid>(result);
+        }
+        else
+        {
+            return new Response<Guid>(Guid.Empty) { IsSuccess = false };
+        }
     }
 
-    public async Task<Response<CountryDto>> GetById(Guid id)
+    public async Task<Response> Update(CountryDto country)
     {
-        var response = await apiClient.GetFromJsonAsync<Response<CountryDto>>($"api/country/{id}");
+        var response = await apiClient.PutAsync("api/country", country);
 
-        if (response == null || response.Data == null)
-            return new Response<CountryDto>(new()) { IsSuccess = false };
-        else
-            return new Response<CountryDto>(response.Data);
+        return response.IsSuccess ?
+            new Response() :
+            response;
     }
 
     public async Task<Response<List<CountryDto>>> GetList()
@@ -47,28 +48,22 @@ public class CountryService(
             return new Response<List<CountryDto>>([]) { IsSuccess = false };
     }
 
-    public async Task<Response> Update(CountryDto country)
+    public async Task<Response<CountryDto>> GetById(Guid id)
     {
-        var response = await apiClient.PutAsync<Response<string>, CountryDto>("api/country", country);
+        var response = await apiClient.GetFromJsonAsync<Response<CountryDto>>($"api/country/{id}");
 
-        //if (response.IsSuccessStatusCode)
-        //    return new Response();
-        //else
-        return new Response() { IsSuccess = false };
+        if (response == null || response.Data == null)
+            return new Response<CountryDto>(new()) { IsSuccess = false };
+        else
+            return new Response<CountryDto>(response.Data);
     }
 
-    public async Task<Response<Guid>> Add(CountryDto country)
+    public async Task<Response> Delete(Guid id)
     {
-        var response = await apiClient.PostAsync<Response<string>, CountryDto>("api/country/add", country);
+        var response = await apiClient.DeleteAsync($"api/country/{id}");
 
-        //if (response.StatusCode == HttpStatusCode.OK)
-        //{
-        //    var result = await response.Content.ReadFromJsonAsync<Guid>();
-        //    return new Response<Guid>(result);
-        //}
-        //else
-        //{
-            return new Response<Guid>(Guid.Empty) { IsSuccess = false };
-        //}
+        return response.IsSuccess ?
+            new Response() :
+            new Response() { IsSuccess = false };
     }
 }

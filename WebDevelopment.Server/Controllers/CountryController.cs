@@ -8,11 +8,12 @@ using WebDevelopment.Application.Queries.Country.GetById;
 using WebDevelopment.Application.Queries.Country.GetList;
 using WebDevelopment.Shared.DTOs;
 using WebDevelopment.Shared.Interfaces;
+using WebDevelopment.Shared.Responses;
 
 namespace WebDevelopment.Server.Controllers;
 
 [ApiController]
-[Authorize]
+[Authorize(Roles = "Admin")]
 [Route("api/country")]
 public class CountryController(
     ICountryService _countryService,
@@ -59,13 +60,13 @@ public class CountryController(
     public async Task<IActionResult> GetListCountries()
     {
         /* With mediatR 
-         */
         var command = new GetCountriesListQuery();
         var result = await _sender.Send(command);
+         */
 
         /* With services
-        var result = await _countryService.GetList();
          */
+        var result = await _countryService.GetList();
 
         if (result.IsSuccess)
             return Ok(result.Data);
@@ -114,6 +115,6 @@ public class CountryController(
         if (result.IsSuccess)
             return Ok();
         else
-            return BadRequest();
+            return BadRequest(result);
     }
 }

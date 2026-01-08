@@ -65,7 +65,7 @@ public class CountryService(
         try
         {
             _logger.LogInformation($"Executing {this.GetType().Name}.{nameof(GetList)} service");
-            var result = await _dbContext.Countries.ToListAsync();
+            var result = await _dbContext.Countries.Take(30).ToListAsync();
 
             if (result != null)
             {
