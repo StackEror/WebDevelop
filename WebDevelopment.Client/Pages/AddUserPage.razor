@@ -7,11 +7,12 @@
 @using WebDevelopment.Client.Models
 @using WebDevelopment.Client.Models.User
 @using WebDevelopment.Shared.Interfaces.Authentication
+@using WebDevelopment.Shared.Roles
 
 @inject IUserService UserService
 @inject NavigationManager NavigationManager
 
-<AuthorizeView Roles="Admin" Context="context1">
+<AuthorizeView Roles="@Roles.Admin" Context="context1">
     <Authorized>
         <div class="d-flex" style="justify-content: center; min-height: 80vh; align-items: center;">
             <Card>
@@ -58,7 +59,7 @@
 
                     <div class="auth-input-group">
                         <RadzenDropDown @bind-Value="NewUserModel.RoleIds"
-                                        Data="@Roles"
+                                        Data="@UserRoles"
                                         Placeholder="Roles"
                                         Multiple="true"
                                         TextProperty="Value"
@@ -94,7 +95,7 @@
     AddUserModel NewUserModel = new();
     private string ErrorMessage = string.Empty;
     private string RegisterErrorMessage = string.Empty;
-    Dictionary<string, string> Roles = new();
+    Dictionary<string, string> UserRoles = new();
     EditContext EditContext;
     private ClaimsPrincipal? user;
 
@@ -102,7 +103,7 @@
     protected override async Task OnInitializedAsync()
     {
         EditContext = new EditContext(NewUserModel);
-        Roles = await UserService.GetRolesAsDictionary();
+        UserRoles = await UserService.GetRolesAsDictionary();
     }
 
     private async Task OnUserNameChange(ChangeEventArgs e)
