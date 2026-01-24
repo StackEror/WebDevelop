@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using WebDevelopment.Domain.Entities;
-using WebDevelopment.Shared.DTOs;
+using WebDevelopment.Shared.DTOs.Country;
 
 namespace WebDevelopment.Application.Mapper;
 

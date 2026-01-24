@@ -1,0 +1,121 @@
+﻿<div class="expandable-card @(IsExpanded ? "expanded" : "collapsed") @CssClass">
+    <div class="expandable-card-header @(IsCollapsible ? "clickable" : "")" @onclick="ToggleExpansion">
+        <h3 class="expandable-card-title">@Title</h3>
+        @if (IsCollapsible)
+        {
+            <button type="button" class="btn-toggle" aria-label="@(IsExpanded ? "Collapse" : "Expand")">
+                <i class="@(IsExpanded ? "fa-solid fa-minus" : "fa-solid fa-plus")"></i>
+            </button>
+        }
+    </div>
+    @if (IsExpanded)
+    {
+        <hr class="mt-1 w-100" />
+        <div class="expandable-card-body">
+            @ChildContent
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public RenderFragment ChildContent { get; set; } = default!;
+
+    [Parameter]
+    public string Title { get; set; } = string.Empty;
+
+    [Parameter]
+    public bool InitiallyExpanded { get; set; } = true;
+
+    [Parameter]
+    public EventCallback<bool> OnExpansionChanged { get; set; }
+
+    [Parameter]
+    public string CssClass { get; set; } = string.Empty;
+
+    [Parameter]
+    public bool IsCollapsible { get; set; } = true;
+
+    private bool IsExpanded { get; set; }
+
+    protected override void OnInitialized()
+    {
+        IsExpanded = InitiallyExpanded || !IsCollapsible;
+    }
+
+    private async Task ToggleExpansion()
+    {
+        if (!IsCollapsible) return;
+
+        IsExpanded = !IsExpanded;
+        await OnExpansionChanged.InvokeAsync(IsExpanded);
+    }
+}
+<style>
+    .expandable-card {
+        background: white;
+        border-radius: 12px;
+        border: 1px solid #E7E7E7;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .expandable-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 24px;
+        user-select: none;
+    }
+
+    .expandable-card-header.clickable {
+        cursor: pointer;
+    }
+
+
+    .expandable-card-title {
+        font-size: 16px;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin: 0;
+        text-transform: none;
+        letter-spacing: unset;
+    }
+
+    .btn-toggle {
+        background: none;
+        border: none;
+        padding: 4px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #666;
+        transition: color 0.2s ease;
+    }
+
+        .btn-toggle:hover {
+            color: #333;
+        }
+
+    .expandable-card-body {
+        padding: 0 24px 24px 24px;
+        animation: slideDown 0.3s ease;
+    }
+
+    @@keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .expandable-card.collapsed {
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+    }
+</style>

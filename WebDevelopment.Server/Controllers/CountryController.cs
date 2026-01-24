@@ -6,7 +6,8 @@ using WebDevelopment.Application.Commands.Country.Delete;
 using WebDevelopment.Application.Commands.Country.Update;
 using WebDevelopment.Application.Queries.Country.GetById;
 using WebDevelopment.Application.Queries.Country.GetList;
-using WebDevelopment.Shared.DTOs;
+using WebDevelopment.Shared.DTOs.Country;
+using WebDevelopment.Shared.DTOs.Page;
 using WebDevelopment.Shared.Interfaces;
 using WebDevelopment.Shared.Responses;
 
@@ -57,7 +58,13 @@ public class CountryController(
             return BadRequest();
     }
     [HttpGet]
-    public async Task<IActionResult> GetListCountries()
+    public async Task<IActionResult> GetListCountries(
+        [FromQuery] CountryFilterDto? filter,
+        [FromQuery] string? searchKeyword,
+        [FromQuery] int sortDirection,
+        [FromQuery] int pageNumber = 0,
+        [FromQuery] int pageSize = 10,
+        [FromQuery] string? sortColumn = "")
     {
         /* With mediatR 
         var command = new GetCountriesListQuery();
@@ -66,12 +73,19 @@ public class CountryController(
 
         /* With services
          */
-        var result = await _countryService.GetList();
+        var result = await _countryService.GetList(new PageFilter<CountryFilterDto>(
+            PageNumber: pageNumber,
+            PageSize: pageSize,
+            Filter: filter,
+            SearchKeyword: searchKeyword,
+            SortDirection: Shared.Enums.SortDirection.None, /*(Shared.Enums.SortDirection)sortDirection,*/
+            SortColumn: sortColumn
+            ));
 
         if (result.IsSuccess)
-            return Ok(result.Data);
+            return Ok(result);
         else
-            return BadRequest(result.Data);
+            return BadRequest(result);
     }
 
     [HttpGet("{Id}")]

@@ -71,6 +71,18 @@
     </div>
 </div>
 
+<Container>
+
+</Container>
+
+<div class="col-lg-3 pt-4 pt-lg-0 mb-3">
+    <ExpandableDetailsCard Title="Title1">
+        <InfoRow Label="Label1" Value="Value1" />
+        <InfoRow Label="Label1" Value="Value1" />
+        <InfoRow Label="Label1" Value="Value1" />
+        <InfoRow Label="Label1" Value="Value1" FlexRow="true" />
+    </ExpandableDetailsCard>
+</div>
 <style>
     .main-content-wrapper {
         grid-template-columns: repeat(3, 1fr);
@@ -82,11 +94,5 @@
 </style>
 
 @code {
-    public List<CountryDto> Countries { get; set; } = [];
-    protected override async Task OnInitializedAsync()
-    {
-        var result = await CountryService.GetList();
-        Countries = result.Data;
-    }
 
 }

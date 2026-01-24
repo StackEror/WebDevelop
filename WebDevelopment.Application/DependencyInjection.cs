@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 using WebDevelopment.Application.Behaviours;
 using WebDevelopment.Application.Security;
+using WebDevelopment.Application.Services;
 using WebDevelopment.Application.Services.Country;
 using WebDevelopment.Application.Services.File;
 using WebDevelopment.Shared.Interfaces;
@@ -23,6 +24,7 @@ public static class DependencyInjection
         services.AddScoped<ICountryService, CountryService>();
         services.AddScoped<IFileService, FileService>();
         services.AddScoped<IUserContext, UserContext>();
+        services.AddScoped(typeof(IDataRequestHandlerService<,>), typeof(DataRequestHandlerService<,>));
 
 
         return services;

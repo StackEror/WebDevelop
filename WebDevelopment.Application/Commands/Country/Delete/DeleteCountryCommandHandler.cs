@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using WebDevelopment.Application.Commands.Country.Add;
 using WebDevelopment.Infrastructure;
-using WebDevelopment.Shared.DTOs;
+using WebDevelopment.Shared.DTOs.Country;
 using WebDevelopment.Shared.Responses;
 
 namespace WebDevelopment.Application.Commands.Country.Delete;

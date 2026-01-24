@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using WebDevelopment.Application.Helpers;
 using WebDevelopment.Infrastructure;
-using WebDevelopment.Shared.DTOs;
+using WebDevelopment.Shared.DTOs.Country;
+using WebDevelopment.Shared.DTOs.Page;
 using WebDevelopment.Shared.Interfaces;
 using WebDevelopment.Shared.Responses;
 
@@ -11,6 +13,7 @@ namespace WebDevelopment.Application.Services.Country;
 public class CountryService(
     AppDbContext _dbContext,
     IMapper _mapper,
+    IDataRequestHandlerService<Domain.Entities.Country, CountryDto> dataRequest,
     ILogger<CountryService> _logger
     ) : ICountryService
 {
@@ -60,27 +63,80 @@ public class CountryService(
             return new Response() { IsSuccess = false };
         }
     }
-    public async Task<Response<List<CountryDto>>> GetList()
+    public async Task<Response<PaginatedCollection<CountryDto>>> GetList(PageFilter<CountryFilterDto> filter)
     {
         try
         {
             _logger.LogInformation($"Executing {this.GetType().Name}.{nameof(GetList)} service");
-            var result = await _dbContext.Countries.Take(30).ToListAsync();
 
-            if (result != null)
+            var query = _dbContext.Countries.AsQueryable();
+
+            if (!string.IsNullOrEmpty(filter.SearchKeyword))
             {
-                var list = _mapper.Map<List<CountryDto>>(result);
-                return new Response<List<CountryDto>>(list);
+                query = QueryProcessorExtension.WhereAnyStringPropertyContains(query, filter.SearchKeyword);
+            }
+            //if (!string.IsNullOrEmpty(filter.SortColumn)) { }
+            //if(filter.SortDirection != SortDirection.None) { }
+
+            int totalCounts = query.Count();
+            int count = 0;
+            if (filter.PageSize > 0)
+            {
+                count = filter.PageNumber * filter.PageSize;
             }
 
-            _logger.LogError($"Result is null");
-            return new Response<List<CountryDto>>([]) { IsSuccess = false };
+            query = query.Skip(count).Take(filter.PageSize);
 
+            if (query != null)
+            {
+                var list = _mapper.Map<List<CountryDto>>(query);
+                var collection = new PaginatedCollection<CountryDto>
+                {
+                    TotalRecords = query.Count(),
+                    TotalPages = totalCounts / filter.PageSize,
+                    PageNumber = filter.PageNumber,
+                    Pages = list,
+                    PageSize = filter.PageSize
+                };
+
+                return new Response<PaginatedCollection<CountryDto>>(collection);
+            }
+            /*
+                if (!string.IsNullOrEmpty(searchKeyword))
+                {
+                    //query = query.Where(r => EF.Functions.Like(r.Name, $"%{searchKeyword}%"));
+                    query = QueryProcessorExtension.WhereAnyStringPropertyContains(query, searchKeyword);
+                }
+             */
+
+            //  V3
+            /*
+                var instance = Activator.CreateInstance<CountryDto>();
+                var query = _dbContext.Countries.Take(30).AsQueryable();
+
+                var dataRequestFilter = new Shared.RequestFeatures.DataRequest()
+                {
+                    Filter = null,
+                    Keyword = string.Empty,
+                    Page = 1,
+                    PageSize = 10,
+                };
+
+                var result = await Task.FromResult(dataRequest.HandleRequest(query, dataRequestFilter));
+                if (result != null && result.Data.Count() > 0)
+                {
+                    var inter = result.Data.ToList();
+                    return new Response<List<CountryDto>>(inter);
+                }
+             */
+
+            _logger.LogError($"Result is null");
+            return new Response<PaginatedCollection<CountryDto>>(default) { IsSuccess = false };
         }
         catch (Exception ex)
         {
             _logger.LogError($"Error: [{ex.Message}] - occured in {this.GetType().Name}.{nameof(GetList)}");
-            return new Response<List<CountryDto>>([]) { IsSuccess = false };
+            return new Response<PaginatedCollection<CountryDto>>(default) { IsSuccess = false };
         }
     }
     public async Task<Response<CountryDto>> GetById(Guid id)
@@ -120,7 +176,7 @@ public class CountryService(
             if (IsSucces == 0)
             {
                 _logger.LogError($"Delete for id [{id}] failed");
-                return new Response() { IsSuccess = false};
+                return new Response() { IsSuccess = false };
             }
             else
             {

@@ -1,5 +1,6 @@
 ﻿using System.Net;
-using WebDevelopment.Shared.DTOs;
+using WebDevelopment.Shared.DTOs.Country;
+using WebDevelopment.Shared.DTOs.Page;
 using WebDevelopment.Shared.Interfaces;
 using WebDevelopment.Shared.Responses;
 
@@ -38,14 +39,21 @@ public class CountryService(
             response;
     }
 
-    public async Task<Response<List<CountryDto>>> GetList()
+    public async Task<Response<PaginatedCollection<CountryDto>>> GetList(PageFilter<CountryFilterDto> PageFilter)
     {
-        var response = await apiClient.GetFromJsonAsync<List<CountryDto>>("api/country");
+        var response = await apiClient.GetFromJsonAsync<Response<PaginatedCollection<CountryDto>>>(
+            $"api/country?" +
+            $"searchKeyword={PageFilter.SearchKeyword}&" +
+            $"pageNumber={PageFilter.PageNumber}&" +
+            $"pageSize={PageFilter.PageSize}&" +
+            $"sortDirection={PageFilter.PageSize}&" +
+            $"sortColumn={PageFilter.PageSize}&" +
+            $"filter={PageFilter.Filter}");
 
         if (response != null)
-            return new Response<List<CountryDto>>(response);
+            return new Response<PaginatedCollection<CountryDto>>(response.Data);
         else
-            return new Response<List<CountryDto>>([]) { IsSuccess = false };
+            return new Response<PaginatedCollection<CountryDto>>(new PaginatedCollection<CountryDto>()) { IsSuccess = false };
     }
 
     public async Task<Response<CountryDto>> GetById(Guid id)

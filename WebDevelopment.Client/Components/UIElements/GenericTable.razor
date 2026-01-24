@@ -1,0 +1,180 @@
+﻿@using System.Reflection
+@using WebDevelopment.Shared.DTOs.Page
+@using WebDevelopment.Shared.Interfaces
+@using WebDevelopment.Shared.Responses
+@typeparam T
+@typeparam TFilter
+
+
+@inject ICountryService CountryService
+@inject NavigationManager NavigationManager
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            @foreach (var prop in Properties)
+            {
+                <th>@prop.Name</th>
+            }
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var element in Elements.Pages)
+        {
+            <tr>
+                @foreach (var item in Properties)
+                {
+                    <td>@(item.GetValue(element))</td>
+                }
+                <th>
+                    <div style="display:flex;">
+                        @if (!string.IsNullOrEmpty(AddOrUpdateLink))
+                        {
+                            <button type="button" class="btn btn-primary m-3" @onclick="() => NavToAddOrUpdate(((Guid)IdProperty.GetValue(element)).ToString())">Update</button>
+                        }
+                        @if (OnDelete.HasDelegate)
+                        {
+                            <button type="button" class="btn btn-primary m-3" @onclick="() => ShowDeleteModal(GetPropertyId(element))">Delete</button>
+                        }
+                    </div>
+                </th>
+            </tr>
+        }
+    </tbody>
+</table>
+<div class="d-flex align-items-center gap-2">
+
+    <button class="btn btn-outline-primary"
+            disabled="@(_pageNumber == 1)"
+            @onclick="async () => await OnPrevious()">
+        Prev
+    </button>
+    <div>
+
+        <p>@_pageNumber / @(Elements.TotalPages)</p>
+    </div>
+
+    <button class="btn btn-primary" disabled="@(_pageNumber == Elements.TotalPages)" @onclick="async () => await OnNext()">Next</button>
+
+    <select class="form-select w-auto" @onchange="SetPageSize">
+        <option value="10">10</option>
+        <option value="25">25</option>
+        <option value="50">50</option>
+        <option value="100">100</option>
+    </select>
+</div>
+
+@if (_showDeleteModal)
+{
+    <BaseModal Title="Confirm" ShowLoading="false" OnCancel="HideDeleteModal" OnConfirm="Delete">
+        Are you sure you want to delete this entity
+    </BaseModal>
+}
+
+
+@code {
+    [Parameter] public PaginatedCollection<T> Elements { get; set; } = new();
+    [Parameter] public PageFilter<TFilter> Filter { get; set; } = new();
+    [Parameter] public EventCallback<PageFilter<TFilter>> FilterChanged { get; set; } = new();
+    [Parameter] public EventCallback<Guid> OnDelete { get; set; } = new();
+    [Parameter] public EventCallback<int> OnGetList { get; set; } = new();
+    [Parameter] public string AddOrUpdateLink { get; set; } = string.Empty;
+
+    private PropertyInfo[] Properties = [];
+    private PropertyInfo IdProperty { get; set; }
+    private Func<T, Guid> GetPropertyId;
+    private Guid IdToDelete { get; set; }
+    private bool _showDeleteModal { get; set; } = false;
+    private int _pageNumber { get; set; } = 1;
+    // private int _pageSize { get; set; } = 1;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+    }
+
+    protected override void OnParametersSet()
+    {
+        Properties = typeof(T)
+                   .GetProperties(BindingFlags.Instance | BindingFlags.Public)
+                   .Where(p => p.CanRead)
+                   .ToArray();
+
+        var idProp = typeof(T).GetProperty("Id");
+        if (idProp != null && idProp.PropertyType == typeof(Guid))
+        {
+            GetPropertyId = (T x) => (Guid)idProp.GetValue(x)!;
+        }
+
+        IdProperty = Properties.FirstOrDefault(p => p.Name == "Id" && p.PropertyType == typeof(Guid));
+    }
+
+    public void NavToAddOrUpdate(string Id = default!)
+    {
+        NavigationManager.NavigateTo($"{AddOrUpdateLink}/{Id}");
+    }
+
+    private void ShowDeleteModal(Guid Id)
+    {
+        _showDeleteModal = true;
+        IdToDelete = Id;
+    }
+
+    private void HideDeleteModal() => _showDeleteModal = false;
+
+    private async Task Delete()
+    {
+        await OnDelete.InvokeAsync(IdToDelete);
+        HideDeleteModal();
+    }
+
+    private async Task OnNext()
+    {
+        if (_pageNumber == Elements.TotalPages)
+        {
+            _pageNumber = Elements.TotalPages;
+        }
+        else
+        {
+            await OnGetList.InvokeAsync(++_pageNumber);
+        }
+    }
+
+    private async Task OnPrevious()
+    {
+        if (_pageNumber <= 1)
+        {
+            _pageNumber = 1;
+        }
+        else
+        {
+            await OnGetList.InvokeAsync(--_pageNumber);
+        }
+    }
+
+    private async Task SetPageSize(ChangeEventArgs e)
+    {
+        var value = e.Value?.ToString();
+
+        var pageSize = value switch
+        {
+            "10" => 10,
+            "25" => 25,
+            "50" => 50,
+            "100" => 100,
+            _ => 10
+        };
+        var filter = Filter;
+        await FilterChanged.InvokeAsync(
+        new PageFilter<TFilter>
+        {
+            Filter = Filter.Filter,
+            SearchKeyword = Filter.SearchKeyword,
+            SortColumn = Filter.SortColumn,
+            SortDirection = Filter.SortDirection,
+            PageSize = pageSize,
+            PageNumber = _pageNumber
+        });
+    }
+}
+

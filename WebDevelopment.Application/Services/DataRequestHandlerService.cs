@@ -22,7 +22,9 @@ namespace WebDevelopment.Application.Services
             var sortedItems = filteredItems.Sort(request);
 
             items = sortedItems.Paginate(request);
-            response = mapper.Map<Response<IEnumerable<DestT>>>(items);
+            var list = items.ToList();
+            var list2 = mapper.Map<IEnumerable<DestT>>(list);
+            response = new Response<IEnumerable<DestT>>(list2);
 
             return response;
         }
@@ -38,7 +40,7 @@ namespace WebDevelopment.Application.Services
                 return items;
             }
 
-            new List<string>();
+            //new List<string>();
             List<string> list = (from p in typeof(T).GetProperties(BindingFlags.Instance | BindingFlags.Public)
                                  where p.PropertyType == typeof(string) && (request2.SearchableColumns == null || request2.SearchableColumns.Count == 0 || request2.SearchableColumns.Contains(p.Name))
                                  select p.Name).ToList();

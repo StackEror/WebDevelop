@@ -2,11 +2,15 @@
 
 @using System.ComponentModel.DataAnnotations
 @using System.Reflection
+@using WebDevelopment.Client.Components.UIElements
 @using WebDevelopment.Client.EnumExtensions
 @using WebDevelopment.Shared.DTOs
+@using WebDevelopment.Shared.DTOs.Country
+@using WebDevelopment.Shared.DTOs.Page
 @using WebDevelopment.Shared.Enums
 @using WebDevelopment.Shared.Interfaces
 @using WebDevelopment.Shared.Modal.ModalSize
+@using WebDevelopment.Shared.Responses
 
 @inject ICountryService CountryService
 @inject NavigationManager NavigationManager
@@ -21,169 +25,163 @@
     }
 
     .input-label {
-        margin-top:15px;
-        display:inline-block
+        margin-top: 15px;
+        display: inline-block
     }
 
     /* Scoatere sageata la input-select*/
     .no-arrow-select {
-        background-image: none; 
+        background-image: none;
     }
     /* Dezactivare border, outline verde la input valid*/
     .valid.modified:not([type=checkbox]) {
         outline: none;
     }
-</style>
 
+
+
+    .search-container {
+        position: relative;
+        width: 300px;
+        margin: 50px auto;
+    }
+
+        /* Stil input */
+        .search-container input {
+            width: 100%;
+            padding: 10px 40px 10px 15px; /* spațiu pentru icon */
+            border: 2px solid #ccc;
+            border-radius: 25px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+            /* Efect focus */
+            .search-container input:focus {
+                border-color: #1563b1;
+                box-shadow: 0 0 5px rgba(21, 99, 177, 0.5);
+                outline: none;
+            }
+
+        /* Icon lupă */
+        .search-container .icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #888;
+            font-size: 18px;
+            pointer-events: none;
+        }
+
+        /* Icon hover */
+        .search-container input:focus + .icon {
+            color: #1563b1;
+        }
+
+</style>
 
 
 <AuthorizeView Context="ctx1">
     <Authorized>
 
-@if (IsLoading)
-{
-    <Loading />
-}
-else
-{
-    <button type="button" class="btn btn-primary m-3" @onclick="() => NavToAddOrUpdate()">Add Or Update Country</button>
+        @if (IsLoading)
+        {
+            <Loading />
+        }
+        else
+        {
+            <button class="btn btn-primary" @onclick="ShowAddModal">Add country</button>
 
-    <table class="table table-bordered table-striped">
-        <thead>
-            <tr>
-                <th>Id </th>
-                <th>Name</th>
-                <th>Continent</th>
-                <th>Rank</th>
-                <th>CountrySize</th>
-                <th>CreatedAt</th>
-                <th>ModifiedAt</th>
-                <th>PeopleCount</th>
-                <th>IsIsland</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Countries)
-            {
-                <tr>
-                    <th id="textToCopy">@item.Id</th>@*<button onclick="copyText('@item.Id')">Copy</button>*@
-                    <th>@item.Name</th>
-                    <th>@(EnumExtensions.GetDisplayName(item.Continent))</th>
-                    <th>@item.Rank.GetDisplayName()</th>
-                    <th>@GetEnumName(item.CountrySize)</th>
-                    <th>@item.CreatedAt</th>
-                    <th>@item.ModifiedAt</th>
-                    <th>@item.PeopleCount</th>
-                    <th>@item.IsIsland</th>
-                    <th>
-                        <div style="display:flex;">
-                            <button type="button" class="btn btn-primary m-3" @onclick="() => NavToAddOrUpdate(item.Id.ToString())">Update</button>
-                            <button type="button" class="btn btn-primary m-3" @onclick="() => ShowDeleteModal(item.Id)">Delete</button>
-                        </div>
-                    </th>
-                </tr>
-            }
-        </tbody>
-    </table>
+            <div class="search-container">
+                <input type="text" placeholder="Caută..." @oninput="SearchByKeyword">
+                <i class="fas fa-search icon"></i>
+            </div>
 
-    <button class="btn btn-primary" @onclick="ShowAddModal">Add country</button>
-}
+            @* <button type="button" class="btn btn-primary m-3" @onclick="() => NavToAddOrUpdate()">Add Or Update Country</button>*@
+
+            <GenericTable T="CountryDto" 
+                TFilter="CountryFilterDto"
+                Elements="Countries" 
+                OnDelete="Delete" 
+                OnGetList="SetPagenumber" 
+                Filter="Filter" 
+                FilterChanged="OnFilterChanged" 
+                AddOrUpdateLink="add-or-update-country" />
+
+        }
 
 
-@if (_showAddModal)
-{
+        @if (_showAddModal)
+        {
+            <BaseModal Title="Add new country" Size="@ModalSize.Medium" OnCancel="HideAddModal" OnConfirm="AddCountry">
 
-    <BaseModal Title="Add new country" Size="@ModalSize.Medium" OnCancel="HideAddModal" OnConfirm="AddCountry">
-        @*async () => await Add(Country)*@
+                <EditForm EditContext="EditContext" FormName="AddCountry">
+                    <DataAnnotationsValidator></DataAnnotationsValidator>
 
-        <EditForm EditContext="EditContext" FormName="AddCountry">
-            <DataAnnotationsValidator></DataAnnotationsValidator>
-            
-            
-            <label class="input-label">PeopleCount</label>
-            <InputNumber class="form-control" @bind-Value="@Country.PeopleCount"></InputNumber>
+                    <label class="input-label">PeopleCount</label>
+                    <InputNumber class="form-control" @bind-Value="@Country.PeopleCount"></InputNumber>
 
+                    <label class="input-label">Type</label>
+                    <InputText class="form-control" @bind-Value="@Country.Type"></InputText>
 
-            <label class="input-label">Type</label>
-            <InputText class="form-control" @bind-Value="@Country.Type"></InputText>
+                    <label class="input-label">Name</label>
+                    <InputText class="form-control" @bind-Value="@Country.Name"></InputText>
+                    <ValidationMessage For="() => Country.Name"></ValidationMessage>
 
+                    <label class="input-label">Continent</label>
+                    <InputSelect class="form-select no-arrow-select" TValue="ContinentEnum?" @bind-Value="@Country.Continent">
+                        <option value="">Select...</option>
+                        @foreach (var val in Enum.GetValues(typeof(ContinentEnum)).Cast<ContinentEnum>())
+                        {
+                            <option value="@val">@val</option>
+                        }
+                    </InputSelect>
+                    <ValidationMessage For="() => Country.Continent"></ValidationMessage>
 
-            <label class="input-label">Name</label>
-            <InputText class="form-control" @bind-Value="@Country.Name"></InputText>
-            <ValidationMessage For="() => Country.Name"></ValidationMessage>
-            
-            
-            <label class="input-label">Continent</label>
-            <InputSelect class="form-select no-arrow-select" TValue="ContinentEnum?" @bind-Value="@Country.Continent">
-                <option value="">Select...</option>
-                @foreach (var val in Enum.GetValues(typeof(ContinentEnum)).Cast<ContinentEnum>())
-                {
-                    <option value="@val">@val</option>
-                }
-            </InputSelect>
-            <ValidationMessage For="() => Country.Continent"></ValidationMessage>
-            
-            
-            <label class="input-label">CountrySize</label>
-            <InputSelect class="form-select" TValue="CountrySizeEnum?" @bind-Value="@Country.CountrySize">
-                <option value="">Select...</option>
-                @foreach (var val in Enum.GetValues(typeof(CountrySizeEnum)).Cast<CountrySizeEnum>())
-                {
-                    <option value="@val">@val</option>
-                }
-            </InputSelect>
-            <ValidationMessage For="() => Country.CountrySize"></ValidationMessage>
+                    <label class="input-label">CountrySize</label>
+                    <InputSelect class="form-select" TValue="CountrySizeEnum?" @bind-Value="@Country.CountrySize">
+                        <option value="">Select...</option>
+                        @foreach (var val in Enum.GetValues(typeof(CountrySizeEnum)).Cast<CountrySizeEnum>())
+                        {
+                            <option value="@val">@val</option>
+                        }
+                    </InputSelect>
+                    <ValidationMessage For="() => Country.CountrySize"></ValidationMessage>
 
+                    <label class="input-label">Rank</label>
+                    <InputSelect class="form-select" TValue="RankEnum?" @bind-Value="@Country.Rank">
+                        <option value="">Select...</option>
+                        @foreach (var val in Enum.GetValues(typeof(RankEnum)).Cast<RankEnum>())
+                        {
+                            <option value="@val">@val</option>
+                        }
+                    </InputSelect>
+                    <ValidationMessage For="() => Country.Rank"></ValidationMessage>
 
-            <label class="input-label">Rank</label>
-            <InputSelect class="form-select" TValue="RankEnum?" @bind-Value="@Country.Rank">
-                <option value="">Select...</option>
-                @foreach (var val in Enum.GetValues(typeof(RankEnum)).Cast<RankEnum>())
-                {
-                    <option value="@val">@val</option>
-                }
-            </InputSelect>
-            <ValidationMessage For="() => Country.Rank"></ValidationMessage>
+                    <label class="input-label">IsIsland</label>
+                    <InputCheckbox @bind-Value="@Country.IsIsland"></InputCheckbox>
 
+                </EditForm>
+            </BaseModal>
 
-            <label class="input-label">IsIsland</label>
-            <InputCheckbox @bind-Value="@Country.IsIsland"></InputCheckbox>
-            @* <div>
-                <button type="submit" class="btn btn-primary">Add country</button>
-            </div> *@
-        </EditForm>
-    </BaseModal>
+        }
 
-}
-
-@* <script>
-    function copyText(text) {
-        navigator.clipboard.writeText(text);
-    }
-</script> *@
-
-@if (_showDeleteModal)
-{
-    <BaseModal Title="Confirm" ShowLoading="false" OnCancel="HideDeleteModal" OnConfirm="Delete">
-        Are you sure you want to delete this country
-    </BaseModal>
-}
- </Authorized>
+    </Authorized>
     <NotAuthorized>
         <RedirectToLogin />
     </NotAuthorized>
 </AuthorizeView>
+
 @code {
     public CountryDto Country { get; set; } = new();
-    public List<CountryDto> Countries { get; set; } = [];
-    public string IdToUse { get; set; } = string.Empty;
-    public bool IsLoading { get; set; } = true;
-    public bool _showAddModal { get; set; } = false;
-    public bool _showDeleteModal { get; set; } = false;
+    public PaginatedCollection<CountryDto> Countries { get; set; } = new();
     private EditContext EditContext { get; set; }
-    private Guid IdToDelete { get; set; }
-
+    public bool IsLoading { get; set; } = true;
+    private bool _showAddModal { get; set; } = false;
+    private int _pageNumer { get; set; }
+    private int _pageSize { get; set; } = 1;
+    private PageFilter<CountryFilterDto> Filter { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -193,25 +191,30 @@ else
         StateHasChanged();
     }
 
-    public async Task GetList()
+    private async Task SetPagenumber(int pageNumber)
     {
-        IsLoading = true;
-        var result = await CountryService.GetList();
+        _pageNumer = pageNumber;
+        var result = await CountryService.GetList(Filter);
+
+        Countries = result.Data;
+    }
+
+    public async Task GetList(bool showLoading = false, PageFilter<CountryFilterDto> filter = default)
+    {
+        if (showLoading)
+            IsLoading = true;
+
+        var result = await CountryService.GetList(Filter);
+
         Countries = result.Data;
         IsLoading = false;
     }
 
-    public void NavToAddOrUpdate(string Id = default!)
+    public async Task Delete(Guid Id)
     {
-        NavigationManager.NavigateTo($"add-or-update-country/{Id}");
-    }
-
-    public async Task Delete()
-    {
-        if (IdToDelete != Guid.Empty)
+        if (Id != Guid.Empty)
         {
-            await CountryService.Delete(IdToDelete);
-            HideDeleteModal();
+            await CountryService.Delete(Id);
         }
         await GetList();
         StateHasChanged();
@@ -237,12 +240,34 @@ else
 
     private void ShowAddModal() => _showAddModal = true;
     private void HideAddModal() => _showAddModal = false;
-    private void ShowDeleteModal(Guid Id)
+
+    public void NavToAddOrUpdate(string Id = default!)
     {
-        IdToDelete = Id;
-        _showDeleteModal = true;
+        NavigationManager.NavigateTo($"add-or-update-country/{Id}");
     }
-    private void HideDeleteModal() => _showDeleteModal = false;
 
     private string GetEnumName(Enum? value) => EnumExtensions.GetDisplayName(value);
+
+    private async Task SearchByKeyword(ChangeEventArgs e)
+    {
+        var searchKeyword = e.Value?.ToString() ?? string.Empty;
+
+        await GetList(filter: Filter);
+    }
+
+    private async Task OnFilterChanged(PageFilter<CountryFilterDto> filterChanged)
+    {
+        Filter = filterChanged;
+        await GetList(filter: Filter);
+    }
 }
+
+@* new PageFilter<CountryFilterDto>
+(
+    PageNumber: _pageNumer,
+    PageSize: filter != null ? filter.PageSize : 10,
+    Filter: new CountryFilterDto(),
+    SearchKeyword: searchKeyword,
+    SortDirection: SortDirection.None,
+    SortColumn: string.Empty
+)*@

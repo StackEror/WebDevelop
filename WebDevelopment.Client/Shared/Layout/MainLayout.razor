@@ -18,9 +18,11 @@
                     <a class="log-out-button" @onclick="async () => await LogOut()">Log Out</a>
                 </div>
 
-                <article class="content px-4">
-                    @Body
-                </article>
+                <div class="main-content">
+                    <article class="content px-4">
+                        @Body
+                    </article>
+                </div>
             </main>
         </div>
 
@@ -35,7 +37,7 @@
     </NotAuthorized>
 </AuthorizeView>
 
-@code{
+@code {
 
     private async Task LogOut()
     {
@@ -44,7 +46,7 @@
 }
 
 <style>
-    .log-out-button:hover{
+    .log-out-button:hover {
         cursor: pointer;
     }
 </style>
