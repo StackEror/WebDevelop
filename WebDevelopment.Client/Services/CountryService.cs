@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using WebDevelopment.Shared.DTOs.Country;
-using WebDevelopment.Shared.DTOs.Page;
 using WebDevelopment.Shared.Interfaces;
+using WebDevelopment.Shared.Page;
 using WebDevelopment.Shared.Responses;
 
 namespace WebDevelopment.Client.Services;

@@ -4,8 +4,8 @@ using Microsoft.Extensions.Logging;
 using WebDevelopment.Application.Helpers;
 using WebDevelopment.Infrastructure;
 using WebDevelopment.Shared.DTOs.Country;
-using WebDevelopment.Shared.DTOs.Page;
 using WebDevelopment.Shared.Interfaces;
+using WebDevelopment.Shared.Page;
 using WebDevelopment.Shared.Responses;
 
 namespace WebDevelopment.Application.Services.Country;

@@ -5,11 +5,9 @@ using WebDevelopment.Application.Commands.Country.Add;
 using WebDevelopment.Application.Commands.Country.Delete;
 using WebDevelopment.Application.Commands.Country.Update;
 using WebDevelopment.Application.Queries.Country.GetById;
-using WebDevelopment.Application.Queries.Country.GetList;
 using WebDevelopment.Shared.DTOs.Country;
-using WebDevelopment.Shared.DTOs.Page;
 using WebDevelopment.Shared.Interfaces;
-using WebDevelopment.Shared.Responses;
+using WebDevelopment.Shared.Page;
 
 namespace WebDevelopment.Server.Controllers;
 
@@ -74,12 +72,12 @@ public class CountryController(
         /* With services
          */
         var result = await _countryService.GetList(new PageFilter<CountryFilterDto>(
-            PageNumber: pageNumber,
-            PageSize: pageSize,
-            Filter: filter,
-            SearchKeyword: searchKeyword,
-            SortDirection: Shared.Enums.SortDirection.None, /*(Shared.Enums.SortDirection)sortDirection,*/
-            SortColumn: sortColumn
+            pageNumber: pageNumber,
+            pageSize: pageSize,
+            filter: filter,
+            searchKeyword: searchKeyword,
+            sortDirection: Shared.Enums.SortDirection.None, /*(Shared.Enums.SortDirection)sortDirection,*/
+            sortColumn: sortColumn
             ));
 
         if (result.IsSuccess)

@@ -1,5 +1,5 @@
 ﻿using WebDevelopment.Shared.DTOs.Country;
-using WebDevelopment.Shared.DTOs.Page;
+using WebDevelopment.Shared.Page;
 using WebDevelopment.Shared.Responses;
 
 namespace WebDevelopment.Shared.Interfaces;

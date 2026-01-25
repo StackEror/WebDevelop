@@ -4,12 +4,11 @@
 @using System.Reflection
 @using WebDevelopment.Client.Components.UIElements
 @using WebDevelopment.Client.EnumExtensions
-@using WebDevelopment.Shared.DTOs
 @using WebDevelopment.Shared.DTOs.Country
-@using WebDevelopment.Shared.DTOs.Page
 @using WebDevelopment.Shared.Enums
 @using WebDevelopment.Shared.Interfaces
 @using WebDevelopment.Shared.Modal.ModalSize
+@using WebDevelopment.Shared.Page
 @using WebDevelopment.Shared.Responses
 
 @inject ICountryService CountryService
@@ -194,9 +193,8 @@
     private async Task SetPagenumber(int pageNumber)
     {
         _pageNumer = pageNumber;
-        var result = await CountryService.GetList(Filter);
-
-        Countries = result.Data;
+        Filter.PageNumber = _pageNumer;
+        await GetList(filter: Filter);
     }
 
     public async Task GetList(bool showLoading = false, PageFilter<CountryFilterDto> filter = default)
