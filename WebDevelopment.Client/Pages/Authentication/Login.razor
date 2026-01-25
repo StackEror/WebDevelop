@@ -117,12 +117,22 @@
             }
             else
             {
-                <span>
-                    Don’t have an account?
-                    <a href="javascript:void(0)" @onclick="() => IsRegister = true">
-                        Create one
-                    </a>
-                </span>
+                @* <div> *@
+                    <span>
+                        Don’t have an account?
+                        <a href="javascript:void(0)" @onclick="() => IsRegister = true">
+                            Create one
+                        </a>
+                    </span>
+                @* </div> *@
+                @* <div class="mt-2">
+                    <span>
+                        Forgot password?
+                        <a href="/change-password">
+                            Change password
+                        </a>
+                    </span>
+                </div> *@
             }
         </div>
         </Card>
@@ -217,6 +227,7 @@
 
 <style>
     .up-logo-container {
+        /* top: (IsRegister ? "-125px" : "-40px"); */
         top: @(IsRegister ? "-125px" : "-25px");
         z-index:9999;
     }

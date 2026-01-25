@@ -16,7 +16,7 @@ public class AuthController(ISender sender) : ControllerBase
 {
 
     [HttpPost("register")]
-    public async Task<IActionResult> AddUser(RegisterUserDto user)
+    public async Task<IActionResult> RegisterAsync(RegisterUserDto user)
     {
         var response = await sender.Send(new RegisterCommand(user));
 

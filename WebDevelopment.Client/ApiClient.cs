@@ -23,9 +23,9 @@ public class ApiClient
 
 
     public ApiClient(
-        HttpClient httpClient, 
-        ProtectedLocalStorageService localStorage, 
-        AuthenticationStateProvider authStateProvider, 
+        HttpClient httpClient,
+        ProtectedLocalStorageService localStorage,
+        AuthenticationStateProvider authStateProvider,
         IConfiguration config,
         ILogger<ApiClient> logger)
     {
@@ -38,7 +38,7 @@ public class ApiClient
         _retryPolicy = Policy
             .HandleResult<HttpResponseMessage>(r => !r.IsSuccessStatusCode)
             .WaitAndRetryAsync(
-                retryCount: 3,
+                retryCount: 1,
                 sleepDurationProvider: retryAttempt =>
                 {
                     var baseDelay = Math.Pow(2, retryAttempt);
@@ -192,12 +192,29 @@ public class ApiClient
             var res = await _retryPolicy.ExecuteAsync(() => _httpClient.PostAsJsonAsync(path, postModel));
             if (!res.IsSuccessStatusCode)
             {
-                var errorContent = await res.Content.ReadAsStringAsync();
-                _logger.LogError($"Error: Status Code {(int)res.StatusCode} ({res.StatusCode}) - {errorContent}");
-                return default;
+                if (typeof(T1) == typeof(string))
+                {
+                    var errorContent = await res.Content.ReadAsStringAsync();
+                    _logger.LogError($"Error: Status Code {(int)res.StatusCode} ({res.StatusCode}) - {errorContent}");
+                    return default;
+                }
+                if (typeof(T1) == typeof(Response))
+                {
+                    var errorContent = await res.Content.ReadFromJsonAsync<Response>();
+                    _logger.LogError($"Error: Status Code {(int)res.StatusCode} ({res.StatusCode}) - {errorContent.Message}");
+                    return (T1)(object)errorContent;
+                }
             }
-
-            return JsonConvert.DeserializeObject<T1>(await res.Content.ReadAsStringAsync())!;
+            if (typeof(T1) == typeof(string))
+            {
+                return JsonConvert.DeserializeObject<T1>(await res.Content.ReadAsStringAsync())!;
+            }
+            if (typeof(T1) == typeof(Response))
+            {
+                var response = await res.Content.ReadFromJsonAsync<Response>();
+                return (T1)(object)response;
+            }
+            return default;
         }
         catch (Exception ex)
         {

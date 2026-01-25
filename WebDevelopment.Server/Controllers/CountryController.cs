@@ -12,7 +12,7 @@ using WebDevelopment.Shared.Page;
 namespace WebDevelopment.Server.Controllers;
 
 [ApiController]
-[Authorize(Roles = "Admin")]
+[Authorize(Roles = "Admin,Client")]
 [Route("api/country")]
 public class CountryController(
     ICountryService _countryService,
