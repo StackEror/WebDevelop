@@ -1,4 +1,4 @@
-﻿using WebDevelopment.Shared.DTOs;
+﻿using WebDevelopment.Shared.DTOs.File;
 using WebDevelopment.Shared.Responses;
 
 namespace WebDevelopment.Shared.Interfaces;

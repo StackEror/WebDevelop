@@ -1,5 +1,5 @@
 ﻿using System.Net;
-using WebDevelopment.Shared.DTOs;
+using WebDevelopment.Shared.DTOs.File;
 using WebDevelopment.Shared.Interfaces;
 using WebDevelopment.Shared.Responses;
 
