@@ -24,6 +24,11 @@ var connectionString = builder.Configuration.GetConnectionString("Default") ??
     throw new InvalidOperationException("Connection string 'Default' not found.");
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
 
+var redisConnectionString = builder.Configuration.GetConnectionString("Cache") ??
+    throw new ArgumentNullException(nameof(builder.Configuration));
+
+builder.Services.AddStackExchangeRedisCache(options => options.Configuration = redisConnectionString);
+
 builder.Services.AddIdentity<User, IdentityRole<Guid>>()
     .AddRoleManager<RoleManager<IdentityRole<Guid>>>()
     .AddUserManager<ApplicationUserManager>()

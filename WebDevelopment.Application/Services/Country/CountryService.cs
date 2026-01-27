@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using WebDevelopment.Application.Helpers;
+using WebDevelopment.Application.Interfaces.Caching;
 using WebDevelopment.Infrastructure;
 using WebDevelopment.Shared.DTOs.Country;
 using WebDevelopment.Shared.Interfaces;
@@ -14,6 +15,7 @@ public class CountryService(
     AppDbContext _dbContext,
     IMapper _mapper,
     IDataRequestHandlerService<Domain.Entities.Country, CountryDto> dataRequest,
+    ICacheService cacheService,
     ILogger<CountryService> _logger
     ) : ICountryService
 {
@@ -143,6 +145,13 @@ public class CountryService(
     {
         try
         {
+            var cacheKey = $"country:id-{id}";
+
+            var cachedEntity = await cacheService.GetAsync<CountryDto>(cacheKey);
+            if (cachedEntity is not null)
+            {
+                return new Response<CountryDto>(cachedEntity);
+            }
             _logger.LogInformation($"Executing {this.GetType().Name}.{nameof(GetById)} service");
 
             var result = await _dbContext.Countries.FirstOrDefaultAsync(i => i.Id == id);
@@ -150,8 +159,12 @@ public class CountryService(
             if (result != null)
             {
                 var country = _mapper.Map<CountryDto>(result);
+
+                await cacheService.SetAsync(cacheKey, country);
+
                 return new Response<CountryDto>(country);
             }
+
 
             _logger.LogError($"Country with id [{id}] was not found");
             return new Response<CountryDto>(new()) { IsSuccess = false };

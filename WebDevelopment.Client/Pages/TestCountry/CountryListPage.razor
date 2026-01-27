@@ -249,7 +249,7 @@
     private async Task SearchByKeyword(ChangeEventArgs e)
     {
         var searchKeyword = e.Value?.ToString() ?? string.Empty;
-
+        Filter.SearchKeyword = searchKeyword;
         await GetList(filter: Filter);
     }
 
